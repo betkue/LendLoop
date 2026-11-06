@@ -21,5 +21,18 @@
     "TOOL_HAS_ACTIVE_LOAN": "Cet outil a un prêt en cours et ne peut pas encore être supprimé.",
     "INVALID_TRANSITION": "Cette demande ne peut plus être modifiée.",
     "UNKNOWN": "Une erreur est survenue. Réessayez."
+  },
+  "common": {
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "retry": "Réessayer",
+    "loading": "Chargement…",
+    "trustedLender": "Prêteur de confiance",
+    "close": "Fermer",
+    "openMenu": "Ouvrir le menu"
   }
 }

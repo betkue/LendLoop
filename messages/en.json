@@ -21,5 +21,18 @@
     "TOOL_HAS_ACTIVE_LOAN": "This tool has a loan in progress and can't be removed yet.",
     "INVALID_TRANSITION": "This request can no longer be changed.",
     "UNKNOWN": "Something went wrong. Please try again."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "trustedLender": "Trusted Lender",
+    "close": "Close",
+    "openMenu": "Open menu"
   }
 }

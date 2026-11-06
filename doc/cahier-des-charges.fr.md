@@ -37,11 +37,15 @@ Un seul document : une partie générale, puis une partie par dossier du dépôt
    - [5.1 Arborescence](#51-arborescence)
    - [5.2 Workflows](#52-workflows)
    - [5.3 Exigences de sécurité et de fiabilité](#53-exigences-de-sécurité-et-de-fiabilité)
+   - [5.4 Points techniques](#54-points-techniques)
 6. [Documentation](#6-documentation--doc) — `doc/`
 7. [Livraison](#7-livraison) — racine (`README.md`, `.env.example`)
    - [7.1 Livrables](#71-livrables)
    - [7.2 Pistes pour la production](#72-pistes-pour-la-production)
    - [7.3 Critères d'évaluation](#73-critères-dévaluation)
+8. [Plan de développement](#8-plan-de-développement)
+   - [8.1 Méthode](#81-méthode)
+   - [8.2 Modules](#82-modules)
 
 ---
 
@@ -182,6 +186,8 @@ Le sujet ne demande pas de traduction : c'est une exigence produit ajoutée.
 | Tailwind + shadcn/ui | Interface | Non |
 | react-hook-form + zod | Formulaires et validation | Non |
 | date-fns | Dates relatives | Non |
+| convex-test + vitest | Tests des fonctions Convex (droits, règles, webhooks) | Non |
+| Mailpit | Faux serveur email pour la démo, dans le docker-compose de n8n | Non |
 
 ### 1.7 Architecture
 
@@ -286,6 +292,8 @@ LendLoop/                                 projet Next.js unique (package.json)
 | `CONVEX_SITE_URL` | n8n | Adresse des endpoints HTTP Convex |
 | `N8N_ENCRYPTION_KEY` | n8n | Chiffre les credentials n8n |
 | `GENERIC_TIMEZONE` | n8n | Fuseau du rappel quotidien |
+| `NODE_FUNCTION_ALLOW_BUILTIN` | n8n | `crypto`, pour vérifier les signatures à temps constant |
+| `SMTP_HOST`, `SMTP_PORT` | n8n | Serveur email (Mailpit en local) |
 
 **Point d'attention** : un Convex hébergé dans le cloud ne peut pas joindre un n8n sur `localhost`. En développement, on utilise un déploiement Convex local (`npx convex dev`, option locale) ; à défaut, un tunnel vers n8n (cloudflared ou ngrok).
 
@@ -465,37 +473,146 @@ next-intl gère les quatre langues ; `messages/en.json` est la référence et le
 
 ## 4. Back-end — `convex/`
 
-Convex détient les données, les droits et les règles. Le détail des fonctions sera complété avant le développement du back-end.
+Convex détient les données, les droits et les règles. Les fichiers publics restent fins ; la logique métier vit dans des fonctions TypeScript simples, dans `model/`.
 
 ### 4.1 Arborescence
 
 ```
 convex/
-├─ schema.ts                users, tools, loans, outbox, automationEvents
-├─ auth.config.ts           lien avec Clerk
-├─ shared/                  importé par Convex ET par le front
-│  ├─ constants.ts          catégories, états, statuts, rôles, langues, codes d'erreur
-│  ├─ validators.ts         validateurs réutilisés
-│  └─ loan-rules.ts         transitions de statut autorisées
-├─ lib/                     auth (requireUser, requireOwner, requireAdmin), errors, hmac
-├─ users.ts  tools.ts  loans.ts  admin.ts
-├─ outbox.ts                envoi des webhooks + relances
-├─ automation.ts            résultats n8n idempotents
-├─ http.ts                  endpoints appelés par n8n
-└─ _generated/              généré par Convex, non modifié
+├─ schema.ts               tables, champs, index
+├─ auth.config.ts          lien avec Clerk (vérification du JWT)
+├─ crons.ts                relance de l'outbox chaque minute
+├─ http.ts                 endpoints appelés par n8n (routes seulement)
+│
+├─ shared/                 importé par Convex ET par le front
+│  ├─ constants.ts         catégories, états, statuts, rôles, langues, codes d'erreur
+│  ├─ validators.ts        validateurs v réutilisés (v.union des clés)
+│  ├─ loan-rules.ts        transitions autorisées : pending → approved | declined | cancelled…
+│  └─ dates.ts             format AAAA-MM-JJ, chevauchement de périodes, « en retard »
+│
+├─ lib/                    outils techniques
+│  ├─ auth.ts              requireUser, requireOwner, requireAdmin
+│  ├─ errors.ts            appError("DATES_OVERLAP") → ConvexError({ code })
+│  └─ hmac.ts              signer, vérifier, horodatage, comparaison à temps constant
+│
+├─ model/                  règles métier (fonctions TypeScript, non exposées)
+│  ├─ users.ts             trouver ou créer un utilisateur, rôle admin depuis ADMIN_EMAILS
+│  ├─ tools.ts             disponibilité, droit de suppression
+│  └─ loans.ts             chevauchement, transitions, ajout à l'outbox
+│
+├─ users.ts                API publique : ensureUser, me, setLocale
+├─ tools.ts                API publique : listPublic, list, get, myListings, create, update, remove
+├─ loans.ts                API publique : request, cancel, approve, decline, markReturned,
+│                                         myRequests, incoming, bookedRanges, activity
+├─ admin.ts                API publique : allLoans, users, removeTool, setTrustedLender
+│
+├─ outbox.ts               interne : enqueue, dispatch (envoi signé à n8n), retry
+├─ automation.ts           interne : dueReminders, recordResult (idempotent)
+├─ seed.ts                 interne : données de démo (Awa, Marc, Léa, Sophie, outils)
+│
+├─ tests/                  convex-test + vitest
+│  ├─ rbac.test.ts         un utilisateur ne peut pas toucher aux données d'un autre
+│  ├─ loans.test.ts        chevauchement, transitions, propre outil
+│  └─ http.test.ts         signature invalide, horodatage expiré, doublon
+│
+└─ _generated/             généré par Convex, non modifié
 ```
+
+| Élément | Pourquoi |
+| --- | --- |
+| `model/` | Règles métier testables et réutilisées par plusieurs fonctions publiques |
+| `crons.ts` | Si n8n est arrêté, les événements restent dans l'outbox et sont renvoyés chaque minute |
+| `seed.ts` | Le recruteur voit tout de suite une application remplie |
+| `tests/` | Prouvent que les droits sont vérifiés côté serveur, et que les webhooks invalides sont refusés |
 
 ### 4.2 Modèle de données
 
-| Table | Champs principaux | Notes |
-| --- | --- | --- |
-| users | clerkId, name, email, role, trustedLender, locale | Créé à la première connexion ; le rôle n'est jamais modifiable par l'utilisateur |
-| tools | ownerId, name, category, condition, description, createdAt | Disponibilité déduite des prêts en cours |
-| loans | toolId, borrowerId, ownerId, startDate, endDate, status, returnedAt | Statuts : pending, approved, declined, returned, cancelled ; « en retard » calculé |
-| outbox | eventId, type, payload, status, attempts, nextAttemptAt | Événements à envoyer à n8n |
-| automationEvents | eventId, loanId, type, status, createdAt | Journal des actions n8n ; eventId unique ; sert au bonus « Reminder sent 2 days ago » |
+```
+┌──────────────┐ 1      n ┌──────────────┐ 1      n ┌──────────────────┐
+│ users        ├─────────►│ tools        ├─────────►│ loans            │
+│              │ possède  │              │          │                  │
+│              ├──────────────────────────────────► │ borrowerId       │
+└──────────────┘ 1  emprunte                     n  │ ownerId          │
+                                                    └────┬────────┬────┘
+                                                       1 │        │ 1
+                                                       n ▼        ▼ n
+                                            ┌──────────────┐  ┌──────────────────┐
+                                            │ outbox       │  │ automationEvents │
+                                            │ à envoyer    │  │ historique       │
+                                            └──────────────┘  └──────────────────┘
+```
 
-`category`, `condition` et `status` sont stockés sous forme de clés (`garden`, `good`, `approved`), traduites côté front.
+#### users
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| tokenIdentifier | string | identifiant Clerk, unique |
+| name | string | |
+| email | string | |
+| role | `"user"` \| `"admin"` | jamais modifiable par l'utilisateur |
+| trustedLender | boolean | false par défaut |
+| locale | `"en"` \| `"fr"` \| `"zh"` \| `"de"` | langue des notifications |
+
+Index : `by_token`.
+
+#### tools
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| ownerId | Id<"users"> | |
+| name | string | 1 à 80 caractères |
+| category | `diy`, `garden`, `kitchen`, `cleaning`, `sports`, `other` | |
+| condition | `new`, `good`, `fair`, `worn` | |
+| description | string | 500 caractères au plus |
+
+Index : `by_owner`, `by_category`. La disponibilité n'est pas stockée : elle se calcule à partir des prêts.
+
+#### loans
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| toolId | Id<"tools"> | |
+| toolName | string | copie du nom : l'historique reste lisible même si l'outil est supprimé |
+| ownerId | Id<"users"> | copié depuis l'outil : « Demandes reçues » se lit avec un seul index |
+| borrowerId | Id<"users"> | différent de ownerId |
+| startDate, endDate | string `AAAA-MM-JJ` | fin ≥ début, pas de date passée |
+| status | `pending` \| `approved` \| `declined` \| `cancelled` \| `returned` | transitions contrôlées par `loan-rules.ts` |
+| decidedAt, returnedAt | number, optionnels | |
+
+Index :
+- `by_tool_status` : chevauchements et disponibilité ;
+- `by_borrower` : Mes demandes ;
+- `by_owner_status` : Demandes reçues ;
+- `by_status_endDate` : retards et échéances du lendemain, sans parcourir toute la table.
+
+#### outbox
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| eventId | string | unique ; clé anti-doublon chez n8n |
+| type | `loan.requested` \| `loan.approved` \| `loan.declined` \| `loan.cancelled` \| `loan.returned` | |
+| loanId | Id<"loans"> | |
+| status | `pending` \| `sent` \| `failed` | |
+| attempts | number | abandon après 5 essais |
+| nextAttemptAt | number | délai croissant entre les essais |
+| lastError | string, optionnel | |
+
+Index : `by_status_nextAttempt`, `by_eventId`. L'outbox ne stocke **aucune donnée personnelle** : nom, email et langue du destinataire sont lus au moment de l'envoi, à partir de `loanId`.
+
+#### automationEvents
+
+| Champ | Type | Règle |
+| --- | --- | --- |
+| eventId | string | unique |
+| loanId | Id<"loans"> | |
+| type | `notification_sent` \| `overdue_reminder_sent` \| `due_tomorrow_reminder_sent` \| `automation_failed` | |
+| channel | `email` \| `log` | |
+
+Index : `by_eventId`, `by_loan`.
+
+L'eventId des rappels est construit à partir du prêt et du jour (`overdue:<loanId>:2026-11-13`) : un même rappel ne peut être enregistré qu'une fois par jour, même si n8n le renvoie.
+
+Catégories, états et statuts sont stockés sous forme de clés et traduits côté front.
 
 ### 4.3 Droits
 
@@ -518,57 +635,79 @@ Les fonctions renvoient un code, jamais un message en clair ; le front le tradui
 
 ### 4.5 Échanges avec n8n
 
-- Une mutation ne peut pas appeler le réseau : elle écrit l'événement dans `outbox` ; une action planifiée l'envoie signé à n8n et relance en cas d'échec.
-- n8n appelle des endpoints HTTP signés (`http.ts`) pour lire les prêts en retard et écrire le résultat des rappels.
-- Chaque message porte un horodatage signé et un eventId unique ; les doublons sont ignorés.
-- Données minimales envoyées : eventId, prénom, email, langue, nom de l'outil, dates.
+| Sens | Endpoint ou mécanisme | Contenu |
+| --- | --- | --- |
+| Convex → n8n | `outbox.dispatch` → webhook du workflow 1 | eventId, type, prénom, email et langue du destinataire, nom de l'outil, dates |
+| n8n → Convex | `GET /n8n/due-reminders` | prêts en retard et échéances du lendemain, avec l'eventId du jour |
+| n8n → Convex | `POST /n8n/reminder-result` | eventId, type, canal ; doublon ignoré |
+| n8n → Convex | `POST /n8n/notification-result` | eventId, canal ; trace dans automationEvents |
+| n8n → Convex | `POST /n8n/automation-error` | eventId, workflow, étape, message |
+
+Chaque message porte un horodatage signé (refus au-delà de 5 minutes) et un eventId unique ; la signature est comparée à temps constant ; un secret différent est utilisé dans chaque sens.
 
 ---
 
 ## 5. Automatisations — `n8n/`
 
-n8n tourne dans Docker. Le dossier contient sa configuration et les workflows exportés, pas de code Node.
+n8n tourne dans Docker avec Mailpit, un faux serveur email : les emails envoyés arrivent dans une boîte visible sur `http://localhost:8025`. Le dossier contient la configuration et les workflows exportés, pas de code Node.
 
 ### 5.1 Arborescence
 
 ```
 n8n/
-├─ docker-compose.yml
-├─ .env.example
+├─ docker-compose.yml      n8n + Mailpit
+├─ .env.example            secrets HMAC, URL Convex, fuseau horaire, clé de chiffrement
 └─ workflows/
-   ├─ notification.json                  workflow 1
-   ├─ overdue-reminder.json              workflow 2 (retard + veille)
-   └─ error-handler.json                 workflow d'erreur
+   ├─ notification.json    workflow 1
+   ├─ due-reminders.json   workflow 2 (retard + veille)
+   └─ error-handler.json   workflow d'erreur
 ```
 
 ### 5.2 Workflows
 
+**Workflow 1 : notification**
+
 ```
-Convex (demande créée ou statut modifié)
-   │ webhook HMAC
-   ▼
-Workflow 1 : notification ──────────────► Destinataire (email, Slack, Discord ou log)
-
-Convex HTTP ◄──── GET signé : prêts en retard ──── Workflow 2 : retards (chaque jour) ───► Emprunteur
-            ◄──── POST idempotent : résultat ────
-
-Workflow 1 et 2 ── en cas d'échec après retries ──► Workflow d'erreur (journalise)
+Webhook (corps brut) → Vérifier HMAC + horodatage ─ invalide → répondre 401
+                                │ valide
+                                ▼
+                   Ignorer les doublons (eventId, entre exécutions)
+                                ▼
+                   Rédiger le message dans la langue du destinataire
+                                ▼
+                   Envoyer l'email (3 tentatives) → POST signé à Convex (résultat) → répondre 200
 ```
 
-1. **Notification** : déclenché par le webhook de Convex à chaque demande ou changement de statut ; message par email, Slack, Discord ou log simulé, dans la langue du destinataire.
-2. **Rappel** : planifié chaque jour ; lit les prêts en retard, rappelle chaque emprunteur, écrit le résultat dans Convex ; prévient aussi la veille de la date de fin.
-3. **Erreur** : capte les échecs après les nouvelles tentatives et les journalise.
+**Workflow 2 : rappels quotidiens**
+
+```
+Tous les jours à 8 h → GET signé /n8n/due-reminders (retards + échéances du lendemain)
+        ▼
+   Un élément par prêt → message dans sa langue → email (3 tentatives)
+        ▼
+   POST signé /n8n/reminder-result (eventId) → Convex ignore les doublons
+```
+
+**Workflow 3 : erreur** : déclenché quand les workflows 1 et 2 échouent après leurs tentatives ; journalise l'échec (workflow, étape, message, eventId) et l'envoie à Convex (`/n8n/automation-error`), qui l'affiche dans l'historique du prêt.
 
 ### 5.3 Exigences de sécurité et de fiabilité
 
 | Exigence | Ce qu'on attend concrètement |
 | --- | --- |
-| Webhooks signés HMAC | Chaque message est signé (HMAC-SHA256 du corps + horodatage) et vérifié à la réception |
-| Secrets hors du code | Credentials n8n et variables d'environnement ; `.env.example` sans valeurs |
+| Webhooks signés HMAC | Chaque message est signé (HMAC-SHA256 de l'horodatage + du corps brut) et vérifié à la réception |
+| Secrets hors du code | Credentials n8n et variables d'environnement ; `.env.example` sans valeurs ; les credentials ne sont pas exportés avec les workflows |
 | Écritures idempotentes | Une même écriture envoyée deux fois n'a qu'un seul effet |
-| Nouvelles tentatives | Retry configuré sur les nœuds qui appellent l'extérieur |
+| Nouvelles tentatives | 3 tentatives sur les nœuds qui appellent l'extérieur |
 | Workflow d'erreur | Capte les échecs et les journalise |
 | Bonus : historique | Activité récente des automatisations visible par prêt |
+
+### 5.4 Points techniques
+
+- Le nœud Webhook utilise l'option « Raw Body » : la signature est calculée sur le corps exact reçu.
+- La vérification à temps constant utilise le module `crypto` de Node, autorisé par `NODE_FUNCTION_ALLOW_BUILTIN=crypto`.
+- Le nœud « Remove Duplicates » écarte un eventId déjà traité dans une exécution précédente.
+- Les messages sont rédigés en 4 langues dans un nœud Code, selon la langue du destinataire.
+- Le port de n8n n'est exposé que sur `127.0.0.1`.
 
 ---
 
@@ -610,3 +749,32 @@ Les deux versions sont tenues à jour ensemble ; toute décision prise pendant l
 3. Expérience utilisateur et côté pratique.
 4. Intégration n8n : conception, fiabilité, gestion des erreurs.
 5. Documentation et justification des choix.
+
+---
+
+## 8. Plan de développement
+
+### 8.1 Méthode
+
+- On travaille strictement **un module à la fois** ; un module métier regroupe son back-end Convex et son front, pour être testable à la fin.
+- Avant de commencer un module, il est découpé en petites fonctionnalités, validées avant d'écrire le code.
+- Chaque fonctionnalité donne des commits séparés par sous-partie, dans l'ordre : modèle → hook → composant → layout ou page (plus `convex` quand une fonction back-end est nécessaire).
+- Commits au format `type(scope): action précise`, en anglais ; code et commentaires en anglais.
+
+### 8.2 Modules
+
+| # | Module | Contenu |
+| --- | --- | --- |
+| 1 | Socle front | Dossiers, shadcn/ui, providers Clerk et Convex, `.env.example` |
+| 2 | i18n | next-intl, routes `[locale]`, messages en et fr, sélecteur de langue |
+| 3 | Partagé front | Composants `ui`, `layout`, `shared`, hooks et `lib` transverses |
+| 4 | Socle Convex | `schema.ts`, `auth.config.ts`, `shared/`, `lib/auth` et `lib/errors`, cadre de tests |
+| 5 | auth | `users.ts` + `model/users` + pages de connexion, `proxy.ts`, UserMenu |
+| 6 | tools | `tools.ts` + `model/tools` + tests + front tools |
+| 7 | loans | `loans.ts` + `model/loans` + tests + front loans (sans les notifications) |
+| 8 | admin | `admin.ts` + tests + front admin |
+| 9 | Outbox et sécurité Convex | `lib/hmac`, `outbox.ts`, `crons.ts`, `http.ts`, `automation.ts`, tests de signature |
+| 10 | n8n | docker-compose + Mailpit, les 3 workflows, export JSON |
+| 11 | Historique | Affichage « Reminder sent 2 days ago » dans le front |
+| 12 | Seed et finitions | `seed.ts`, pages d'erreur, mobile, traductions zh et de |
+| 13 | Livraison | README en anglais, note de production |

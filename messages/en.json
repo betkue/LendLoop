@@ -6,10 +6,6 @@
   "LanguageSwitcher": {
     "label": "Change language"
   },
-  "Home": {
-    "title": "LendLoop",
-    "tagline": "Borrow what you need. Lend what you don't."
-  },
   "errors": {
     "UNAUTHENTICATED": "Please sign in to continue.",
     "FORBIDDEN": "You are not allowed to do this.",

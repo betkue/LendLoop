@@ -6,10 +6,6 @@
   "LanguageSwitcher": {
     "label": "Changer de langue"
   },
-  "Home": {
-    "title": "LendLoop",
-    "tagline": "Empruntez ce dont vous avez besoin. Prêtez ce qui ne vous sert pas."
-  },
   "errors": {
     "UNAUTHENTICATED": "Connectez-vous pour continuer.",
     "FORBIDDEN": "Vous n'avez pas le droit de faire cette action.",

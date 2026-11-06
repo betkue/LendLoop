@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { deDE, enUS, frFR, zhCN } from "@clerk/localizations";
+import { Toaster } from "@/components/ui/sonner";
 import type { Locale } from "@/i18n/routing";
 import { ConvexClientProvider } from "./convex-client-provider";
 
@@ -19,6 +20,7 @@ export function AppProviders({ locale, children }: { locale: Locale; children: R
   return (
     <ClerkProvider localization={CLERK_LOCALIZATIONS[locale]}>
       <ConvexClientProvider>{children}</ConvexClientProvider>
+      <Toaster position="top-center" richColors closeButton />
     </ClerkProvider>
   );
 }

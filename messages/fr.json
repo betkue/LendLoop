@@ -38,5 +38,16 @@
   "dateRange": {
     "placeholder": "Choisir les dates de début et de fin",
     "unavailableHint": "Les jours grisés sont déjà réservés."
+  },
+  "nav": {
+    "label": "Navigation principale",
+    "tools": "Parcourir",
+    "myListings": "Mes annonces",
+    "myRequests": "Mes demandes",
+    "incoming": "Demandes reçues",
+    "admin": "Admin"
+  },
+  "footer": {
+    "tagline": "LendLoop — empruntez ce dont vous avez besoin, prêtez ce qui ne vous sert pas."
   }
 }

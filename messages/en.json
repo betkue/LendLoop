@@ -38,5 +38,16 @@
   "dateRange": {
     "placeholder": "Pick start and end dates",
     "unavailableHint": "Greyed-out days are already booked."
+  },
+  "nav": {
+    "label": "Main navigation",
+    "tools": "Browse tools",
+    "myListings": "My listings",
+    "myRequests": "My requests",
+    "incoming": "Incoming requests",
+    "admin": "Admin"
+  },
+  "footer": {
+    "tagline": "LendLoop — borrow what you need, lend what you don't."
   }
 }

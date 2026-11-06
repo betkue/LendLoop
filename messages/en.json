@@ -49,5 +49,13 @@
   },
   "footer": {
     "tagline": "LendLoop — borrow what you need, lend what you don't."
+  },
+  "auth": {
+    "adminBadge": "Admin",
+    "heroAlt": "Hand tools hanging on a workshop pegboard",
+    "heroTitle": "Your neighborhood's toolbox, shared.",
+    "heroPoint1": "Borrow from neighbors instead of buying",
+    "heroPoint2": "Book dates that never overlap",
+    "heroPoint3": "Owners stay in control of every request"
   }
 }

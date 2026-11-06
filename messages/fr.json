@@ -49,5 +49,13 @@
   },
   "footer": {
     "tagline": "LendLoop — empruntez ce dont vous avez besoin, prêtez ce qui ne vous sert pas."
+  },
+  "auth": {
+    "adminBadge": "Admin",
+    "heroAlt": "Outils à main accrochés au mur d'un atelier",
+    "heroTitle": "La boîte à outils de votre quartier, partagée.",
+    "heroPoint1": "Empruntez à vos voisins au lieu d'acheter",
+    "heroPoint2": "Réservez des dates qui ne se chevauchent jamais",
+    "heroPoint3": "Les propriétaires gardent la main sur chaque demande"
   }
 }

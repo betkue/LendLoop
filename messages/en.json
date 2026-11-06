@@ -3,6 +3,9 @@
     "title": "LendLoop",
     "description": "Borrow what you need. Lend what you don't."
   },
+  "LanguageSwitcher": {
+    "label": "Change language"
+  },
   "Home": {
     "title": "LendLoop",
     "tagline": "Borrow what you need. Lend what you don't."

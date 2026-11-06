@@ -3,6 +3,9 @@
     "title": "LendLoop",
     "description": "Empruntez ce dont vous avez besoin. Prêtez ce qui ne vous sert pas."
   },
+  "LanguageSwitcher": {
+    "label": "Changer de langue"
+  },
   "Home": {
     "title": "LendLoop",
     "tagline": "Empruntez ce dont vous avez besoin. Prêtez ce qui ne vous sert pas."

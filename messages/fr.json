@@ -57,5 +57,105 @@
     "heroPoint1": "Empruntez à vos voisins au lieu d'acheter",
     "heroPoint2": "Réservez des dates qui ne se chevauchent jamais",
     "heroPoint3": "Les propriétaires gardent la main sur chaque demande"
+  },
+  "tools": {
+    "categories": {
+      "diy": "Bricolage",
+      "garden": "Jardin",
+      "kitchen": "Cuisine",
+      "cleaning": "Ménage",
+      "sports": "Sport et plein air",
+      "other": "Autre"
+    },
+    "conditions": {
+      "new": "Neuf",
+      "good": "Bon état",
+      "fair": "État correct",
+      "worn": "Usé"
+    },
+    "availability": {
+      "available": "Disponible",
+      "onLoan": "En prêt"
+    },
+    "landing": {
+      "title": "Empruntez ce dont vous avez besoin. Prêtez ce qui ne vous sert pas.",
+      "subtitle": "LendLoop relie les voisins qui partagent perceuses, échelles, tondeuses et bien plus : chaque outil sert, et personne n'en achète un pour une seule fois.",
+      "signIn": "Se connecter pour prêter ou emprunter",
+      "openApp": "Ouvrir LendLoop",
+      "availableTitle": "Disponible près de chez vous",
+      "availableSubtitle": "Un aperçu de ce que les voisins prêtent en ce moment.",
+      "emptyTitle": "Aucun outil pour l'instant",
+      "emptyDescription": "Soyez le premier voisin à prêter quelque chose.",
+      "heroAlt": "Maisons dans un quartier calme",
+      "howTitle": "Comment ça marche",
+      "step1Title": "Proposez vos outils",
+      "step1Text": "Ajoutez une photo, une catégorie et une courte description.",
+      "step2Title": "Demandez une période",
+      "step2Text": "Les voisins choisissent des jours encore libres.",
+      "step3Title": "Prêtez et récupérez",
+      "step3Text": "Vous acceptez les demandes et marquez les outils rendus."
+    },
+    "browse": {
+      "title": "Parcourir les outils",
+      "subtitle": "Tout ce que vos voisins prêtent.",
+      "listTool": "Proposer un outil",
+      "all": "Tous",
+      "filterLabel": "Filtrer par catégorie",
+      "emptyTitle": "Aucun outil dans cette catégorie",
+      "emptyDescription": "Essayez une autre catégorie ou proposez-en un.",
+      "by": "Prêté par {name}"
+    },
+    "detail": {
+      "condition": "État",
+      "owner": "Prêté par",
+      "edit": "Modifier l'annonce",
+      "yours": "C'est votre annonce",
+      "backToTools": "Tous les outils",
+      "notFoundTitle": "Cet outil n'est plus proposé",
+      "notFoundDescription": "Son propriétaire l'a peut-être retiré."
+    },
+    "form": {
+      "createTitle": "Proposer un outil",
+      "createSubtitle": "Les voisins verront la photo, le nom et la catégorie.",
+      "editTitle": "Modifier l'annonce",
+      "name": "Nom",
+      "namePlaceholder": "ex. Perceuse sans fil",
+      "category": "Catégorie",
+      "condition": "État",
+      "description": "Description",
+      "descriptionPlaceholder": "Ce qui est inclus, comment l'utiliser, ce qu'il faut savoir.",
+      "photo": "Photo",
+      "photoHint": "JPEG, PNG ou WebP, 5 Mo maximum.",
+      "choosePhoto": "Choisir une photo",
+      "changePhoto": "Changer",
+      "removePhoto": "Retirer",
+      "submitCreate": "Publier l'annonce",
+      "submitEdit": "Enregistrer",
+      "created": "Votre outil est en ligne.",
+      "updated": "Annonce mise à jour.",
+      "errors": {
+        "nameRequired": "Donnez un nom à votre outil.",
+        "nameTooLong": "Le nom doit faire moins de 80 caractères.",
+        "descriptionTooLong": "La description doit faire moins de 500 caractères.",
+        "photoType": "Utilisez une image JPEG, PNG ou WebP.",
+        "photoSize": "La photo doit faire 5 Mo maximum.",
+        "upload": "La photo n'a pas pu être envoyée. Réessayez."
+      }
+    },
+    "listings": {
+      "title": "Mes annonces",
+      "subtitle": "Les outils que vous prêtez au quartier.",
+      "emptyTitle": "Aucune annonce pour l'instant",
+      "emptyDescription": "Proposez votre premier outil pour que vos voisins puissent l'emprunter.",
+      "colTool": "Outil",
+      "colCategory": "Catégorie",
+      "colStatus": "Statut",
+      "colRequests": "Demandes en attente",
+      "colActions": "Actions",
+      "deleteTitle": "Supprimer cette annonce ?",
+      "deleteDescription": "Les demandes en attente seront refusées. Cette action est définitive.",
+      "deleted": "Annonce supprimée.",
+      "deleteBlocked": "Suppression impossible pendant un prêt en cours."
+    }
   }
 }

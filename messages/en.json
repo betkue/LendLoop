@@ -57,5 +57,105 @@
     "heroPoint1": "Borrow from neighbors instead of buying",
     "heroPoint2": "Book dates that never overlap",
     "heroPoint3": "Owners stay in control of every request"
+  },
+  "tools": {
+    "categories": {
+      "diy": "DIY",
+      "garden": "Garden",
+      "kitchen": "Kitchen",
+      "cleaning": "Cleaning",
+      "sports": "Sports & outdoors",
+      "other": "Other"
+    },
+    "conditions": {
+      "new": "New",
+      "good": "Good",
+      "fair": "Fair",
+      "worn": "Worn"
+    },
+    "availability": {
+      "available": "Available",
+      "onLoan": "On loan"
+    },
+    "landing": {
+      "title": "Borrow what you need. Lend what you don't.",
+      "subtitle": "LendLoop connects neighbors who share drills, ladders, mowers and more — so every tool gets used, and nobody buys one for a single job.",
+      "signIn": "Sign in to lend or borrow",
+      "openApp": "Open LendLoop",
+      "availableTitle": "Available near you",
+      "availableSubtitle": "A preview of what neighbors are lending right now.",
+      "emptyTitle": "No tools listed yet",
+      "emptyDescription": "Be the first neighbor to lend something.",
+      "heroAlt": "Houses in a quiet neighborhood",
+      "howTitle": "How it works",
+      "step1Title": "List what you own",
+      "step1Text": "Add a photo, a category and a short description.",
+      "step2Title": "Request a date range",
+      "step2Text": "Neighbors pick days that are still free.",
+      "step3Title": "Lend and get it back",
+      "step3Text": "You approve requests and mark tools as returned."
+    },
+    "browse": {
+      "title": "Browse tools",
+      "subtitle": "Everything your neighbors are lending.",
+      "listTool": "List a tool",
+      "all": "All",
+      "filterLabel": "Filter by category",
+      "emptyTitle": "No tools in this category",
+      "emptyDescription": "Try another category or list one yourself.",
+      "by": "Lent by {name}"
+    },
+    "detail": {
+      "condition": "Condition",
+      "owner": "Lent by",
+      "edit": "Edit listing",
+      "yours": "This is your listing",
+      "backToTools": "All tools",
+      "notFoundTitle": "This tool is no longer listed",
+      "notFoundDescription": "It may have been removed by its owner."
+    },
+    "form": {
+      "createTitle": "List a tool",
+      "createSubtitle": "Neighbors will see the photo, name and category.",
+      "editTitle": "Edit listing",
+      "name": "Name",
+      "namePlaceholder": "e.g. Cordless drill",
+      "category": "Category",
+      "condition": "Condition",
+      "description": "Description",
+      "descriptionPlaceholder": "What's included, how to use it, anything to know.",
+      "photo": "Photo",
+      "photoHint": "JPEG, PNG or WebP, up to 5 MB.",
+      "choosePhoto": "Choose a photo",
+      "changePhoto": "Change",
+      "removePhoto": "Remove",
+      "submitCreate": "Publish listing",
+      "submitEdit": "Save changes",
+      "created": "Your tool is listed.",
+      "updated": "Listing updated.",
+      "errors": {
+        "nameRequired": "Give your tool a name.",
+        "nameTooLong": "Keep the name under 80 characters.",
+        "descriptionTooLong": "Keep the description under 500 characters.",
+        "photoType": "Use a JPEG, PNG or WebP image.",
+        "photoSize": "The photo must be 5 MB or less.",
+        "upload": "The photo could not be uploaded. Try again."
+      }
+    },
+    "listings": {
+      "title": "My listings",
+      "subtitle": "Tools you lend to the neighborhood.",
+      "emptyTitle": "No listings yet",
+      "emptyDescription": "List your first tool so neighbors can borrow it.",
+      "colTool": "Tool",
+      "colCategory": "Category",
+      "colStatus": "Status",
+      "colRequests": "Pending requests",
+      "colActions": "Actions",
+      "deleteTitle": "Delete this listing?",
+      "deleteDescription": "Pending requests will be declined. This can't be undone.",
+      "deleted": "Listing deleted.",
+      "deleteBlocked": "Can't delete while a loan is in progress."
+    }
   }
 }

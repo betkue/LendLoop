@@ -26,7 +26,7 @@ const LANGUAGE_NAMES: Record<Locale, string> = {
  * Switches the UI language while staying on the same page.
  * next-intl stores the choice in the NEXT_LOCALE cookie for later visits.
  */
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ onLocaleChange }: { onLocaleChange?: (locale: Locale) => void } = {}) {
   const t = useTranslations("LanguageSwitcher");
   const locale = useLocale();
   const pathname = usePathname();
@@ -34,6 +34,7 @@ export function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
 
   function changeLocale(next: string) {
+    onLocaleChange?.(next as Locale);
     startTransition(() => {
       router.replace(pathname, { locale: next as Locale });
     });

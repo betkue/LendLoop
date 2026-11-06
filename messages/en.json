@@ -9,5 +9,17 @@
   "Home": {
     "title": "LendLoop",
     "tagline": "Borrow what you need. Lend what you don't."
+  },
+  "errors": {
+    "UNAUTHENTICATED": "Please sign in to continue.",
+    "FORBIDDEN": "You are not allowed to do this.",
+    "NOT_FOUND": "This item no longer exists.",
+    "INVALID_INPUT": "Some fields are invalid. Please check the form.",
+    "INVALID_DATES": "Choose an end date on or after the start date, not in the past.",
+    "DATES_OVERLAP": "These dates overlap an approved loan for this tool.",
+    "OWN_TOOL": "You can't borrow your own tool.",
+    "TOOL_HAS_ACTIVE_LOAN": "This tool has a loan in progress and can't be removed yet.",
+    "INVALID_TRANSITION": "This request can no longer be changed.",
+    "UNKNOWN": "Something went wrong. Please try again."
   }
 }

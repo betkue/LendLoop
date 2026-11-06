@@ -9,5 +9,17 @@
   "Home": {
     "title": "LendLoop",
     "tagline": "Empruntez ce dont vous avez besoin. Prêtez ce qui ne vous sert pas."
+  },
+  "errors": {
+    "UNAUTHENTICATED": "Connectez-vous pour continuer.",
+    "FORBIDDEN": "Vous n'avez pas le droit de faire cette action.",
+    "NOT_FOUND": "Cet élément n'existe plus.",
+    "INVALID_INPUT": "Certains champs sont invalides. Vérifiez le formulaire.",
+    "INVALID_DATES": "Choisissez une date de fin égale ou postérieure au début, et non passée.",
+    "DATES_OVERLAP": "Ces dates chevauchent un prêt accepté pour cet outil.",
+    "OWN_TOOL": "Vous ne pouvez pas emprunter votre propre outil.",
+    "TOOL_HAS_ACTIVE_LOAN": "Cet outil a un prêt en cours et ne peut pas encore être supprimé.",
+    "INVALID_TRANSITION": "Cette demande ne peut plus être modifiée.",
+    "UNKNOWN": "Une erreur est survenue. Réessayez."
   }
 }

@@ -7,8 +7,9 @@ import { routing } from "@/i18n/routing";
 import { AppProviders } from "@/providers/app-providers";
 import "../globals.css";
 
+// The shadcn theme in globals.css reads the sans font from --font-sans.
 const geistSans = Geist({
-  variable: "--font-geist-sans",
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 

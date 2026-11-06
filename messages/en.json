@@ -153,5 +153,66 @@
       "deleted": "Listing deleted.",
       "deleteBlocked": "Can't delete while a loan is in progress."
     }
+  },
+  "loans": {
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "declined": "Declined",
+      "cancelled": "Cancelled",
+      "returned": "Returned",
+      "overdue": "Overdue"
+    },
+    "toasts": {
+      "requested": "Request sent to the owner.",
+      "cancelled": "Request cancelled.",
+      "approved": "Request approved.",
+      "declined": "Request declined.",
+      "returned": "Marked as returned."
+    },
+    "request": {
+      "title": "Borrow this tool",
+      "subtitle": "Pick the days you need it. The owner will approve or decline.",
+      "dates": "Dates",
+      "submit": "Send request",
+      "signedOutHint": "Sign in to borrow.",
+      "errors": {
+        "datesRequired": "Choose a start and an end date.",
+        "datesInvalid": "Pick dates from today on, with the end after the start."
+      }
+    },
+    "myRequests": {
+      "title": "My requests",
+      "subtitle": "Tools you asked to borrow.",
+      "emptyTitle": "No requests yet",
+      "emptyDescription": "Browse the tools and ask a neighbor to borrow one.",
+      "browse": "Browse tools",
+      "cancel": "Cancel request",
+      "cancelTitle": "Cancel this request?",
+      "cancelDescription": "The owner will be notified.",
+      "owner": "Owner: {name}"
+    },
+    "incoming": {
+      "title": "Incoming requests",
+      "subtitle": "Requests on the tools you lend.",
+      "tabPending": "To review",
+      "tabActive": "On loan",
+      "tabHistory": "History",
+      "emptyPending": "No requests to review",
+      "emptyActive": "Nothing on loan right now",
+      "emptyHistory": "No past loans yet",
+      "emptyDescription": "New requests on your tools appear here in real time.",
+      "borrower": "Requested by {name}",
+      "approve": "Approve",
+      "decline": "Decline",
+      "markReturned": "Mark as returned",
+      "overlapWarning": "These dates overlap a loan you already approved.",
+      "declineTitle": "Decline this request?",
+      "declineDescription": "The borrower will be notified.",
+      "returnTitle": "Mark as returned?",
+      "returnDescription": "The tool becomes available again."
+    },
+    "toolRemoved": "Tool no longer listed",
+    "requestedOn": "Requested {date}"
   }
 }

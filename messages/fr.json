@@ -153,5 +153,66 @@
       "deleted": "Annonce supprimée.",
       "deleteBlocked": "Suppression impossible pendant un prêt en cours."
     }
+  },
+  "loans": {
+    "status": {
+      "pending": "En attente",
+      "approved": "Acceptée",
+      "declined": "Refusée",
+      "cancelled": "Annulée",
+      "returned": "Rendue",
+      "overdue": "En retard"
+    },
+    "toasts": {
+      "requested": "Demande envoyée au propriétaire.",
+      "cancelled": "Demande annulée.",
+      "approved": "Demande acceptée.",
+      "declined": "Demande refusée.",
+      "returned": "Marqué comme rendu."
+    },
+    "request": {
+      "title": "Emprunter cet outil",
+      "subtitle": "Choisissez les jours souhaités. Le propriétaire acceptera ou refusera.",
+      "dates": "Dates",
+      "submit": "Envoyer la demande",
+      "signedOutHint": "Connectez-vous pour emprunter.",
+      "errors": {
+        "datesRequired": "Choisissez une date de début et une date de fin.",
+        "datesInvalid": "Choisissez des dates à partir d'aujourd'hui, la fin après le début."
+      }
+    },
+    "myRequests": {
+      "title": "Mes demandes",
+      "subtitle": "Les outils que vous avez demandé à emprunter.",
+      "emptyTitle": "Aucune demande pour l'instant",
+      "emptyDescription": "Parcourez les outils et demandez-en un à un voisin.",
+      "browse": "Parcourir les outils",
+      "cancel": "Annuler la demande",
+      "cancelTitle": "Annuler cette demande ?",
+      "cancelDescription": "Le propriétaire sera prévenu.",
+      "owner": "Propriétaire : {name}"
+    },
+    "incoming": {
+      "title": "Demandes reçues",
+      "subtitle": "Les demandes sur les outils que vous prêtez.",
+      "tabPending": "À traiter",
+      "tabActive": "En prêt",
+      "tabHistory": "Historique",
+      "emptyPending": "Aucune demande à traiter",
+      "emptyActive": "Rien en prêt pour l'instant",
+      "emptyHistory": "Aucun prêt passé",
+      "emptyDescription": "Les nouvelles demandes sur vos outils apparaissent ici en temps réel.",
+      "borrower": "Demandé par {name}",
+      "approve": "Accepter",
+      "decline": "Refuser",
+      "markReturned": "Marquer comme rendu",
+      "overlapWarning": "Ces dates chevauchent un prêt que vous avez déjà accepté.",
+      "declineTitle": "Refuser cette demande ?",
+      "declineDescription": "L'emprunteur sera prévenu.",
+      "returnTitle": "Marquer comme rendu ?",
+      "returnDescription": "L'outil redevient disponible."
+    },
+    "toolRemoved": "Outil retiré",
+    "requestedOn": "Demandé le {date}"
   }
 }

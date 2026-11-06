@@ -34,5 +34,9 @@
     "trustedLender": "Prêteur de confiance",
     "close": "Fermer",
     "openMenu": "Ouvrir le menu"
+  },
+  "dateRange": {
+    "placeholder": "Choisir les dates de début et de fin",
+    "unavailableHint": "Les jours grisés sont déjà réservés."
   }
 }

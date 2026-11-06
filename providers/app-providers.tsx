@@ -4,6 +4,7 @@ import { deDE, enUS, frFR, zhCN } from "@clerk/localizations";
 import { Toaster } from "@/components/ui/sonner";
 import type { Locale } from "@/i18n/routing";
 import { ConvexClientProvider } from "./convex-client-provider";
+import { MotionProvider } from "./motion-provider";
 
 // Clerk's prebuilt screens (sign-in, sign-up, user menu) follow the app language.
 const CLERK_LOCALIZATIONS = { en: enUS, fr: frFR, zh: zhCN, de: deDE } satisfies Record<
@@ -19,7 +20,9 @@ const CLERK_LOCALIZATIONS = { en: enUS, fr: frFR, zh: zhCN, de: deDE } satisfies
 export function AppProviders({ locale, children }: { locale: Locale; children: ReactNode }) {
   return (
     <ClerkProvider localization={CLERK_LOCALIZATIONS[locale]}>
-      <ConvexClientProvider>{children}</ConvexClientProvider>
+      <ConvexClientProvider>
+        <MotionProvider>{children}</MotionProvider>
+      </ConvexClientProvider>
       <Toaster position="top-center" richColors closeButton />
     </ClerkProvider>
   );

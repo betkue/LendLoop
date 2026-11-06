@@ -28,7 +28,7 @@ const LANGUAGE_NAMES: Record<Locale, string> = {
  */
 export function LanguageSwitcher() {
   const t = useTranslations("LanguageSwitcher");
-  const locale = useLocale() as Locale;
+  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

@@ -1,10 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import type { Locale } from "@/i18n/routing";
 
 // Temporary home page; replaced by the public landing page in the tools module.
 export default async function Home({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
-  setRequestLocale(locale);
+  // The [locale] layout has already rejected unsupported locales with notFound().
+  setRequestLocale(locale as Locale);
   const t = await getTranslations("Home");
 
   return (

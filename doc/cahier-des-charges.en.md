@@ -469,6 +469,16 @@ next-intl handles the four languages; `messages/en.json` is the source of truth 
 - Every list has an explicit, translated empty state (`EmptyState`).
 - Mobile-friendly layout: single-column grids and tables replaced by cards on small screens.
 
+#### Design
+
+| Rule | Detail |
+| --- | --- |
+| Style | Professional and clean: shadcn/ui components, neutral palette with a single accent color |
+| Icons | lucide icons only; no emoji anywhere in the UI |
+| Colors | Flat colors only; no gradients |
+| Responsive | Every screen checked at three sizes: mobile (375 px), tablet (768 px), desktop (1280 px and up) |
+| Mobile and tablet | Navigation collapsed into a menu, tables shown as cards, touch targets of at least 44 px |
+
 ---
 
 ## 4. Back-end — `convex/`

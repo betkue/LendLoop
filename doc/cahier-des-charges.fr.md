@@ -469,6 +469,16 @@ next-intl gère les quatre langues ; `messages/en.json` est la référence et le
 - Chaque liste a un état vide explicite et traduit (`EmptyState`).
 - Mise en page adaptée au mobile : grilles en une colonne et tableaux remplacés par des cartes sur petit écran.
 
+#### Design
+
+| Règle | Détail |
+| --- | --- |
+| Style | Professionnel et sobre : composants shadcn/ui, palette neutre avec une seule couleur d'accent |
+| Icônes | Icônes lucide uniquement ; aucun emoji dans l'interface |
+| Couleurs | Aplats uniquement ; aucun dégradé |
+| Responsive | Trois tailles vérifiées pour chaque écran : mobile (375 px), tablette (768 px), ordinateur (1280 px et plus) |
+| Mobile et tablette | Navigation repliée dans un menu, tableaux affichés en cartes, zones tactiles d'au moins 44 px |
+
 ---
 
 ## 4. Back-end — `convex/`

@@ -8,6 +8,7 @@ import {
   TOOL_NAME_MAX,
 } from "../shared/constants";
 import { isWithin, today } from "../shared/dates";
+import { enqueueEvent } from "./outbox";
 
 type Ctx = QueryCtx | MutationCtx;
 
@@ -62,7 +63,7 @@ export async function assertValidImage(ctx: MutationCtx, imageId: Id<"_storage">
 /**
  * Deletes a tool once no approved loan is in progress: pending requests are
  * declined first so borrowers are not left waiting. Loans keep their tool name
- * snapshot for history. Returns the declined loan ids (to notify borrowers).
+ * snapshot for history; declined borrowers are notified through the outbox.
  */
 export async function deleteTool(ctx: MutationCtx, tool: Doc<"tools">): Promise<Id<"loans">[]> {
   if ((await approvedLoans(ctx, tool._id)).length > 0) throw appError("TOOL_HAS_ACTIVE_LOAN");
@@ -74,6 +75,7 @@ export async function deleteTool(ctx: MutationCtx, tool: Doc<"tools">): Promise<
   const now = Date.now();
   for (const loan of pending) {
     await ctx.db.patch(loan._id, { status: "declined", decidedAt: now });
+    await enqueueEvent(ctx, "loan.declined", loan._id);
   }
 
   if (tool.imageId) await ctx.storage.delete(tool.imageId);

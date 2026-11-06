@@ -240,6 +240,7 @@ Convex est le seul endroit qui décide : Next.js affiche, Clerk identifie, n8n e
 | 6 | Un secret HMAC par sens | Si l'un fuit, l'autre sens reste protégé |
 | 7 | **Outbox** : la mutation écrit l'événement, une action planifiée l'envoie et relance | Une mutation ne peut pas appeler le réseau ; aucune notification perdue ; l'eventId sert de clé anti-doublon |
 | 8 | Traductions côté Next.js ; Convex ne stocke que des clés et des codes d'erreur | Les données restent indépendantes de la langue |
+| 9 | `cacheComponents` de Next.js désactivé | Les pages sont surtout des composants client alimentés en temps réel par Convex ; l'option imposerait un `<Suspense>` autour de chaque lecture d'URL sans gain réel |
 
 ### 1.8 Arborescence du dépôt
 

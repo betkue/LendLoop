@@ -87,7 +87,8 @@ What the project adds to the brief; each addition is justified in the README.
 - **Replay protection** for webhooks: signed timestamp rejected after 5 minutes, unique ID per message (duplicates ignored), constant-time signature comparison, in both directions.
 - **Outbox**: no notification is lost if n8n is down.
 - **Listing deletion blocked** while an approved loan has not been returned.
-- **Polished UI**: explicit empty states, mobile-friendly layout.
+- **Polished UI**: explicit empty states, mobile- and tablet-friendly layout, animations with Motion.
+- **Tool photos**: each listing can have a photo; the demo is pre-filled with royalty-free data and images.
 
 ### 1.4 How the platform works
 
@@ -184,6 +185,7 @@ The brief does not ask for translations: this is an added product requirement.
 | TypeScript | Language for the whole project | Yes |
 | next-intl | Translations and per-language routing | No |
 | Tailwind + shadcn/ui | UI | No |
+| Motion | Animations | No |
 | react-hook-form + zod | Forms and validation | No |
 | date-fns | Relative dates | No |
 | convex-test + vitest | Tests for Convex functions (permissions, rules, webhooks) | No |
@@ -327,7 +329,8 @@ Each screen shows the rules before Convex enforces them: users understand why an
 
 | Screen | What you do there | Visible rules |
 | --- | --- | --- |
-| Public page | See available tools, change language, sign in | Name and category only |
+| Public page | See available tools, change language, sign in | Name, category and photo only |
+| Sign-in, sign-up | Sign in or create an account | Two panels: Clerk form and image; image hidden on mobile |
 | All tools | Browse, filter by category | Available / Unavailable badge; Trusted Lender badge |
 | Tool detail | Read the listing, request a loan | Calendar greys out approved periods; form hidden on your own tool; invalid dates blocked |
 | Create / edit | Enter name, category, condition, description | Translated categories, conditions and errors |
@@ -414,7 +417,7 @@ components/                              SHARED: no business logic
                                          relative-time, trusted-lender-badge
 
 hooks/                                   use-search-param, use-safe-mutation
-lib/                                     dates, errors (Convex code → translation key), routes, cn
+lib/                                     dates, errors (Convex code → translation key), routes, utils (cn)
 providers/                               app-providers (NextIntl > localized Clerk > Convex), convex-client-provider
 i18n/
 ├─ routing.ts                            locales, defaultLocale "en", localePrefix "always"
@@ -478,6 +481,9 @@ next-intl handles the four languages; `messages/en.json` is the source of truth 
 | Colors | Flat colors only; no gradients |
 | Responsive | Every screen checked at three sizes: mobile (375 px), tablet (768 px), desktop (1280 px and up) |
 | Mobile and tablet | Navigation collapsed into a menu, tables shown as cards, touch targets of at least 44 px |
+| Animations | Motion library: reveal on scroll, page transitions, animated lists, feedback on actions; short durations (150 to 400 ms), never blocking; honors `prefers-reduced-motion` |
+| Images | Royalty-free tool photos and illustrations (Unsplash, Pexels), authors credited in `public/seed/CREDITS.md`; `next/image` for optimized loading |
+| Sign-in pages | Two panels: Clerk form on one side, image on the other; image hidden on mobile |
 
 ---
 
@@ -574,6 +580,7 @@ Index: `by_token`.
 | category | `diy`, `garden`, `kitchen`, `cleaning`, `sports`, `other` | |
 | condition | `new`, `good`, `fair`, `worn` | |
 | description | string | 500 characters max |
+| imageId | Id<"_storage">, optional | photo kept in Convex file storage; JPEG, PNG or WebP, 5 MB max |
 
 Indexes: `by_owner`, `by_category`. Availability is not stored: it is computed from loans.
 
@@ -750,7 +757,7 @@ Both versions are kept in sync; every decision made during development is record
 | Per-user request rate limit | Curb spam |
 | Regular HMAC secret rotation | Limit the impact of a leak without downtime |
 | Monitoring with Sentry and Datadog | Detect errors and slowness |
-| Neighbor reviews, tool photos, neighborhood filter | Trust and relevance of listings |
+| Neighbor reviews, neighborhood filter | Trust and relevance of listings |
 
 ### 7.3 Evaluation criteria
 
@@ -786,5 +793,5 @@ Both versions are kept in sync; every decision made during development is record
 | 9 | Outbox and Convex security | `lib/hmac`, `outbox.ts`, `crons.ts`, `http.ts`, `automation.ts`, signature tests |
 | 10 | n8n | docker-compose + Mailpit, the 3 workflows, JSON export |
 | 11 | History | "Reminder sent 2 days ago" display in the front-end |
-| 12 | Seed and polish | `seed.ts`, error pages, mobile, zh and de translations |
+| 12 | Seed and polish | `seed.ts` with royalty-free data and images, error pages, mobile, zh and de translations |
 | 13 | Delivery | English README, production note |

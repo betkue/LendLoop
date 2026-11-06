@@ -87,7 +87,8 @@ Ce que le projet ajoute au sujet ; chaque ajout est justifié dans le README.
 - **Protection contre le rejeu** des webhooks : horodatage signé refusé au-delà de 5 minutes, identifiant unique par message (doublons ignorés), signatures comparées à temps constant, dans les deux sens.
 - **File d'envoi (outbox)** : aucune notification perdue si n8n est arrêté.
 - **Suppression d'annonce bloquée** tant qu'un prêt accepté n'est pas rendu.
-- **Interface soignée** : pages vides explicites, affichage adapté au mobile.
+- **Interface soignée** : pages vides explicites, affichage adapté au mobile et à la tablette, animations avec Motion.
+- **Photos des outils** : chaque annonce peut avoir une photo ; la démo est pré-remplie avec des données et des images libres de droits.
 
 ### 1.4 Fonctionnement de la plateforme
 
@@ -184,6 +185,7 @@ Le sujet ne demande pas de traduction : c'est une exigence produit ajoutée.
 | TypeScript | Langage de tout le projet | Oui |
 | next-intl | Traductions et routage par langue | Non |
 | Tailwind + shadcn/ui | Interface | Non |
+| Motion | Animations | Non |
 | react-hook-form + zod | Formulaires et validation | Non |
 | date-fns | Dates relatives | Non |
 | convex-test + vitest | Tests des fonctions Convex (droits, règles, webhooks) | Non |
@@ -327,7 +329,8 @@ Chaque écran affiche les règles avant que Convex ne les impose : l'utilisateur
 
 | Écran | Ce qu'on y fait | Règles visibles |
 | --- | --- | --- |
-| Page publique | Voir les outils disponibles, changer de langue, se connecter | Nom et catégorie seulement |
+| Page publique | Voir les outils disponibles, changer de langue, se connecter | Nom, catégorie et photo seulement |
+| Connexion, inscription | Se connecter ou créer un compte | Deux volets : formulaire Clerk et image ; image masquée sur mobile |
 | Tous les outils | Parcourir, filtrer par catégorie | Badge Disponible / Indisponible ; badge Trusted Lender |
 | Fiche outil | Lire la fiche, demander un emprunt | Calendrier qui grise les périodes déjà acceptées ; formulaire masqué sur son propre outil ; dates invalides bloquées |
 | Proposer / modifier | Saisir nom, catégorie, état, description | Catégories, états et erreurs traduits |
@@ -414,7 +417,7 @@ components/                              PARTAGÉ : aucun métier
                                          relative-time, trusted-lender-badge
 
 hooks/                                   use-search-param, use-safe-mutation
-lib/                                     dates, errors (code Convex → clé de traduction), routes, cn
+lib/                                     dates, errors (code Convex → clé de traduction), routes, utils (cn)
 providers/                               app-providers (NextIntl > Clerk localisé > Convex), convex-client-provider
 i18n/
 ├─ routing.ts                            locales, defaultLocale "en", localePrefix "always"
@@ -478,6 +481,9 @@ next-intl gère les quatre langues ; `messages/en.json` est la référence et le
 | Couleurs | Aplats uniquement ; aucun dégradé |
 | Responsive | Trois tailles vérifiées pour chaque écran : mobile (375 px), tablette (768 px), ordinateur (1280 px et plus) |
 | Mobile et tablette | Navigation repliée dans un menu, tableaux affichés en cartes, zones tactiles d'au moins 44 px |
+| Animations | Bibliothèque Motion : apparitions au défilement, transitions entre pages, listes animées, retours visuels sur les actions ; durées courtes (150 à 400 ms), aucune animation bloquante ; respect de `prefers-reduced-motion` |
+| Images | Photos des outils et illustrations libres de droits (Unsplash, Pexels), auteurs crédités dans `public/seed/CREDITS.md` ; `next/image` pour le chargement optimisé |
+| Pages de connexion | Deux volets : formulaire Clerk d'un côté, image de l'autre ; sur mobile, l'image est masquée |
 
 ---
 
@@ -574,6 +580,7 @@ Index : `by_token`.
 | category | `diy`, `garden`, `kitchen`, `cleaning`, `sports`, `other` | |
 | condition | `new`, `good`, `fair`, `worn` | |
 | description | string | 500 caractères au plus |
+| imageId | Id<"_storage">, optionnel | photo stockée dans le stockage de fichiers Convex ; JPEG, PNG ou WebP, 5 Mo au plus |
 
 Index : `by_owner`, `by_category`. La disponibilité n'est pas stockée : elle se calcule à partir des prêts.
 
@@ -750,7 +757,7 @@ Les deux versions sont tenues à jour ensemble ; toute décision prise pendant l
 | Limite de demandes par utilisateur | Freiner le spam |
 | Rotation régulière des secrets HMAC | Limiter l'impact d'une fuite sans coupure |
 | Surveillance avec Sentry et Datadog | Détecter les erreurs et lenteurs |
-| Avis entre voisins, photos des outils, filtre par quartier | Confiance et pertinence des annonces |
+| Avis entre voisins, filtre par quartier | Confiance et pertinence des annonces |
 
 ### 7.3 Critères d'évaluation
 
@@ -786,5 +793,5 @@ Les deux versions sont tenues à jour ensemble ; toute décision prise pendant l
 | 9 | Outbox et sécurité Convex | `lib/hmac`, `outbox.ts`, `crons.ts`, `http.ts`, `automation.ts`, tests de signature |
 | 10 | n8n | docker-compose + Mailpit, les 3 workflows, export JSON |
 | 11 | Historique | Affichage « Reminder sent 2 days ago » dans le front |
-| 12 | Seed et finitions | `seed.ts`, pages d'erreur, mobile, traductions zh et de |
+| 12 | Seed et finitions | `seed.ts` avec données et images libres de droits, pages d'erreur, mobile, traductions zh et de |
 | 13 | Livraison | README en anglais, note de production |

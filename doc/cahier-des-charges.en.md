@@ -503,7 +503,7 @@ convex/
 ├─ shared/                 imported by Convex AND the front-end
 │  ├─ constants.ts         categories, conditions, statuses, roles, locales, error codes
 │  ├─ validators.ts        reusable v validators (v.union of keys)
-│  ├─ loan-rules.ts        allowed transitions: pending → approved | declined | cancelled…
+│  ├─ loanRules.ts        allowed transitions: pending → approved | declined | cancelled…
 │  └─ dates.ts             YYYY-MM-DD format, period overlap, "overdue"
 │
 ├─ lib/                    technical helpers
@@ -593,7 +593,7 @@ Indexes: `by_owner`, `by_category`. Availability is not stored: it is computed f
 | ownerId | Id<"users"> | copied from the tool: "Incoming requests" reads a single index |
 | borrowerId | Id<"users"> | different from ownerId |
 | startDate, endDate | string `YYYY-MM-DD` | end ≥ start, no past dates |
-| status | `pending` \| `approved` \| `declined` \| `cancelled` \| `returned` | transitions controlled by `loan-rules.ts` |
+| status | `pending` \| `approved` \| `declined` \| `cancelled` \| `returned` | transitions controlled by `loanRules.ts` |
 | decidedAt, returnedAt | number, optional | |
 
 Indexes:

@@ -49,7 +49,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
-          <AppProviders>{children}</AppProviders>
+          <AppProviders locale={locale}>{children}</AppProviders>
         </NextIntlClientProvider>
       </body>
     </html>

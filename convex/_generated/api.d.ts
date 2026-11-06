@@ -10,10 +10,12 @@
 
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_errors from "../lib/errors.js";
+import type * as model_users from "../model/users.js";
 import type * as shared_constants from "../shared/constants.js";
 import type * as shared_dates from "../shared/dates.js";
 import type * as shared_loanRules from "../shared/loanRules.js";
 import type * as shared_validators from "../shared/validators.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -24,10 +26,12 @@ import type {
 declare const fullApi: ApiFromModules<{
   "lib/auth": typeof lib_auth;
   "lib/errors": typeof lib_errors;
+  "model/users": typeof model_users;
   "shared/constants": typeof shared_constants;
   "shared/dates": typeof shared_dates;
   "shared/loanRules": typeof shared_loanRules;
   "shared/validators": typeof shared_validators;
+  users: typeof users;
 }>;
 
 /**

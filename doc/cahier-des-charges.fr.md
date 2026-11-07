@@ -352,7 +352,7 @@ Chaque écran affiche les règles avant que Convex ne les impose : l'utilisateur
 app/
 ├─ globals.css                           Tailwind
 └─ [locale]/                             en | fr | zh | de
-   ├─ layout.tsx                         <html lang>, police (+ Noto Sans SC), <AppProviders>
+   ├─ layout.tsx                         <html lang>, police, <AppProviders>
    ├─ page.tsx                           serveur : preloadQuery(listPublic) → <PublicLanding>
    ├─ not-found.tsx
    ├─ error.tsx
@@ -462,7 +462,7 @@ next-intl gère les quatre langues ; `messages/en.json` est la référence et le
 | Clerk | `localization` = enUS, frFR, zhCN ou deDE selon la langue active |
 | Formulaires | Schémas zod créés avec `t()` pour des messages d'erreur traduits |
 | Dates | `useFormatter` de next-intl et date-fns avec la locale active |
-| Mise en page | Police avec glyphes chinois (Noto Sans SC) ; boutons assez larges pour l'allemand |
+| Mise en page | Polices système chinoises (PingFang SC, Microsoft YaHei, Noto Sans SC) en repli ; boutons assez larges pour l'allemand |
 
 ### 3.4 Conventions
 

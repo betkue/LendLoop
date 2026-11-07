@@ -352,7 +352,7 @@ Each screen shows the rules before Convex enforces them: users understand why an
 app/
 ├─ globals.css                           Tailwind
 └─ [locale]/                             en | fr | zh | de
-   ├─ layout.tsx                         <html lang>, font (+ Noto Sans SC), <AppProviders>
+   ├─ layout.tsx                         <html lang>, font, <AppProviders>
    ├─ page.tsx                           server: preloadQuery(listPublic) → <PublicLanding>
    ├─ not-found.tsx
    ├─ error.tsx
@@ -462,7 +462,7 @@ next-intl handles the four languages; `messages/en.json` is the source of truth 
 | Clerk | `localization` = enUS, frFR, zhCN or deDE depending on the active language |
 | Forms | zod schemas built with `t()` for translated error messages |
 | Dates | next-intl `useFormatter` and date-fns with the active locale |
-| Layout | Font with Chinese glyphs (Noto Sans SC); buttons wide enough for German |
+| Layout | System Chinese fonts (PingFang SC, Microsoft YaHei, Noto Sans SC) as fallback; buttons wide enough for German |
 
 ### 3.4 Conventions
 

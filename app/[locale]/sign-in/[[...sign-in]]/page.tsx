@@ -9,7 +9,9 @@ export default async function SignInPage({ params }: PageProps<"/[locale]/sign-i
 
   return (
     <AuthSplitLayout>
+      {/* withSignUp: an unknown email continues into account creation instead of an error. */}
       <SignIn
+        withSignUp
         path={`/${locale}/sign-in`}
         signUpUrl={`/${locale}/sign-up`}
         fallbackRedirectUrl={`/${locale}/tools`}

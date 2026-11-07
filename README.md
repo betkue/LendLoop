@@ -6,10 +6,12 @@ Neighbors list the tools they own, request others for a date range, approve or d
 
 Built with **Next.js 16 (App Router)**, **Clerk**, **Convex**, **n8n** and **TypeScript**.
 
+To try it quickly, load the demo data and sign in with one of the [demo accounts](#demo-accounts), the admin one included.
+
 - [Features](#features)
 - [Architecture](#architecture)
 - [Security and data minimization](#security-and-data-minimization)
-- [Local setup](#local-setup)
+- [Local setup](#local-setup) and [demo accounts](#demo-accounts)
 - [Environment variables](#environment-variables)
 - [n8n workflows](#n8n-workflows)
 - [Tests](#tests)
@@ -22,12 +24,12 @@ Full specification: [doc/cahier-des-charges.en.md](doc/cahier-des-charges.en.md)
 
 | Area | What you can do |
 | --- | --- |
-| Public page | Tagline, how it works, live list of available tools (name, category and photo only), sign-in |
+| Home | Tagline, how it works, categories and the latest tools, sign-in |
+| Catalog (public) | Store-style header with search by name and a bar of categories; one page per category, a search results page, an "available today" filter and sorting. Visitors see name, category, condition, photo and availability; opening a tool asks them to sign in |
 | Listings | List a tool with name, category, condition, description and an optional photo; edit or delete your own |
-| Browse | All tools with availability, filterable by category (kept in the URL) |
 | Borrowing | Request a date range; already-approved periods are greyed out in the calendar |
 | Requests | My requests (cancel while pending) and Incoming requests (approve, decline, mark returned) |
-| Admin | All loans with a status filter (including overdue), remove any listing, grant the Trusted Lender badge |
+| Admin | All loans with a status filter (including overdue), the member list, remove any listing, grant or remove the Trusted Lender badge |
 | Automations | Notification on every request and status change; daily day-before and overdue reminders; per-loan history ("Overdue reminder sent 2 days ago") |
 | Languages | English (default), French, Chinese and German, with the locale in every URL (`/en/tools`, `/fr/tools`…) |
 
@@ -53,6 +55,8 @@ Beyond the brief: overlapping approvals are refused, owners cannot borrow their 
 └───────────────────────────────────────────────────────────────────┘
 ```
 
+**Database.** Convex is a document database with typed tables (`users`, `tools`, `loans`, `outbox`, `automationEvents`, defined in [convex/schema.ts](convex/schema.ts)). Every mutation is a transaction, and pages update live when data changes. Locally it runs on your machine; in production it would be a Convex cloud deployment.
+
 Key decisions:
 
 1. **Convex is the source of truth for permissions.** Every query and mutation identifies the user from the Clerk JWT and checks role and ownership. The proxy and the admin guard in Next.js are only conveniences.
@@ -69,7 +73,7 @@ Key decisions:
 | Layer | Protection |
 | --- | --- |
 | Convex functions | `requireUser`, `requireOwner`, `requireAdmin` in every function; `v` validators on every argument; allowed status transitions only (`convex/shared/loanRules.ts`); text and photo limits re-checked server-side |
-| Public data | `tools.listPublic` returns name, category and photo only — no owner, no email |
+| Public data | `tools.listPublic` and `tools.catalog` give visitors name, category, condition, photo and availability only — no owner, no email |
 | Member data | Other members appear by first name only; email addresses are visible to admins only |
 | Webhooks, both directions | HMAC-SHA256 over `timestamp.body`; requests older than 5 minutes are rejected (replay protection); constant-time comparison; one secret per direction, so a leak on one side does not compromise the other |
 | Idempotency | Every event has an `eventId`; Convex records each write-back once (`automationEvents.by_eventId`), n8n remembers handled events, daily reminder ids are built per loan and day (at most one reminder of each kind per day) |
@@ -129,10 +133,11 @@ npm run dev                          # http://localhost:3000
 
 Sign up with the email you put in `ADMIN_EMAILS` to get the admin area.
 
-**5. Demo data**
+### Demo accounts
 
 ```bash
-node scripts/seed-demo.mts --me you@example.com   # --me is optional: your account also gets listings and history
+npm run seed                                # demo accounts and data
+npm run seed -- --me you@example.com        # optional: your own account also gets listings and history
 ```
 
 The script needs development Clerk keys (`sk_test_`) and refuses production keys. It creates four neighbors and an admin account in the Clerk development instance, then fills Convex with 15 tools with photos and about 30 loans in every status: pending (including two overlapping requests), current, due tomorrow, overdue, returned, declined, cancelled. The loans come with their notification and reminder history.
@@ -175,12 +180,12 @@ Exported in [`n8n/workflows/`](n8n/workflows/). The Code node sources live in [`
 ## Tests
 
 ```bash
-npm test               # 40 tests with convex-test + Vitest
+npm test               # 43 tests with convex-test + Vitest
 npm run i18n:check     # every language has the same keys as en.json (add -- --strict to fail on missing ones)
 npm run lint
 ```
 
-The tests run the real Convex functions: permissions (users cannot touch other users' data, admin-only functions), loan rules (own tool, past or reversed dates, overlaps, allowed transitions, cancellation), outbox delivery (signed minimal payload, retries and give-up), the HTTP endpoints (unsigned, wrong-secret and replayed requests, duplicates, malformed bodies) and the n8n Code nodes themselves against the Convex HMAC implementation.
+The tests run the real Convex functions: permissions (users cannot touch other users' data, admin-only functions), loan rules (own tool, past or reversed dates, overlaps, allowed transitions, cancellation), the public catalog (search, category, what visitors can see), outbox delivery (signed minimal payload, retries and give-up), the HTTP endpoints (unsigned, wrong-secret and replayed requests, duplicates, malformed bodies) and the n8n Code nodes themselves against the Convex HMAC implementation.
 
 ## Project structure
 
@@ -194,6 +199,9 @@ hooks/  lib/  providers/ cross-cutting hooks, utilities, global providers
 i18n/  messages/         next-intl routing and the en, fr, zh, de messages
 convex/                  schema, public API (users, tools, loans, admin), model/ rules, outbox, http, crons, seed, tests
 n8n/                     docker-compose, Code node sources, generated workflows
+scripts/                 demo seed (Clerk test accounts + Convex data), message key check
+test/                    convex-test setup and helpers
+public/seed/             credits of the demo photos
 doc/                     specification (en, fr)
 ```
 

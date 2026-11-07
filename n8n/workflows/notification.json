@@ -1,0 +1,356 @@
+{
+  "id": "LendLoopNotify01",
+  "name": "LendLoop · Loan notifications",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "LendLoopErrors01",
+    "saveManualExecutions": true
+  },
+  "nodes": [
+    {
+      "id": "lendloop-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lendloop-events",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "webhookId": "4f1d2c3b-lendloop-events"
+    },
+    {
+      "id": "lendloop-2",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Workflow 1 · Verify signature\n// Checks the HMAC signature Convex put on the request (lib/hmac.ts):\n// hex(HMAC_SHA256(HMAC_SECRET_CONVEX_TO_N8N, `${timestamp}.${rawBody}`)), with\n// the timestamp inside a 5-minute window so captured requests cannot be replayed.\n// Also flags events already handled (Convex retries, replays inside the window).\nconst crypto = require('crypto');\n\nconst MAX_SKEW_MS = 5 * 60 * 1000;\nconst item = $input.first();\nconst headers = item.json.headers || {};\nconst timestamp = headers['x-lendloop-timestamp'];\nconst signature = String(headers['x-lendloop-signature'] || '').toLowerCase();\nconst secret = $env.HMAC_SECRET_CONVEX_TO_N8N;\n\n// The webhook keeps the raw body (Raw Body option) so the signature is checked\n// on the exact bytes Convex signed.\nlet raw;\nif (item.binary && item.binary.data) {\n  raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8');\n} else {\n  raw = JSON.stringify(item.json.body);\n}\n\nconst reject = (reason) => [{ json: { valid: false, reason } }];\nif (!secret || !timestamp || !signature) return reject('missing');\nif (!Number.isFinite(Number(timestamp)) || Math.abs(Date.now() - Number(timestamp)) > MAX_SKEW_MS) {\n  return reject('expired');\n}\n\nconst expected = crypto.createHmac('sha256', secret).update(`${timestamp}.${raw}`).digest('hex');\nconst a = Buffer.from(expected);\nconst b = Buffer.from(signature);\nif (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return reject('invalid');\n\nconst event = JSON.parse(raw);\nconst handled = $getWorkflowStaticData('global').handledEventIds || [];\nreturn [{ json: { valid: true, duplicate: handled.includes(event.eventId), event } }];\n"
+      }
+    },
+    {
+      "id": "lendloop-3",
+      "name": "Signature valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "Signature valid?-condition",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "lendloop-4",
+      "name": "Reject (401)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        480
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: 'unauthorized', reason: $json.reason }) }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "lendloop-5",
+      "name": "Already handled?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "Already handled?-condition",
+              "leftValue": "={{ $json.duplicate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "lendloop-6",
+      "name": "Ignore duplicate",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        80
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"duplicate\" }",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "lendloop-7",
+      "name": "Compose email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Email texts in the four app languages. Shared by both workflows: the build\n// script (build-workflows.mjs) inlines this file at the top of each\n// \"Compose email\" Code node.\nconst MESSAGES = {\n  en: {\n    'loan.requested': { subject: (e) => `${e.other} wants to borrow your ${e.tool}`, body: (e) => `${e.other} asked to borrow your ${e.tool} from ${e.start} to ${e.end}. Open LendLoop to approve or decline the request.` },\n    'loan.cancelled': { subject: (e) => `${e.other} cancelled a request`, body: (e) => `${e.other} cancelled the request for your ${e.tool} (${e.start} to ${e.end}).` },\n    'loan.approved': { subject: (e) => `Approved: ${e.tool}`, body: (e) => `Good news: ${e.other} approved your request for the ${e.tool} from ${e.start} to ${e.end}.` },\n    'loan.declined': { subject: (e) => `Request declined: ${e.tool}`, body: (e) => `Your request for the ${e.tool} (${e.start} to ${e.end}) was declined. Other tools may be available on LendLoop.` },\n    'loan.returned': { subject: (e) => `Returned: ${e.tool}`, body: (e) => `${e.other} marked the ${e.tool} as returned. Thanks for borrowing responsibly!` },\n    due_tomorrow_reminder: { subject: (e) => `Reminder: the ${e.tool} is due tomorrow`, body: (e) => `The ${e.tool} you borrowed from ${e.other} is due back tomorrow (${e.end}).` },\n    overdue_reminder: { subject: (e) => `Overdue: please return the ${e.tool}`, body: (e) => `The ${e.tool} you borrowed from ${e.other} was due on ${e.end}. Please return it as soon as possible.` },\n    greeting: (name) => `Hi ${name},`,\n    footer: 'You receive this email because you use LendLoop.',\n  },\n  fr: {\n    'loan.requested': { subject: (e) => `${e.other} souhaite emprunter votre ${e.tool}`, body: (e) => `${e.other} demande à emprunter votre ${e.tool} du ${e.start} au ${e.end}. Ouvrez LendLoop pour accepter ou refuser la demande.` },\n    'loan.cancelled': { subject: (e) => `${e.other} a annulé une demande`, body: (e) => `${e.other} a annulé sa demande pour votre ${e.tool} (du ${e.start} au ${e.end}).` },\n    'loan.approved': { subject: (e) => `Acceptée : ${e.tool}`, body: (e) => `Bonne nouvelle : ${e.other} a accepté votre demande pour ${e.tool} du ${e.start} au ${e.end}.` },\n    'loan.declined': { subject: (e) => `Demande refusée : ${e.tool}`, body: (e) => `Votre demande pour ${e.tool} (du ${e.start} au ${e.end}) a été refusée. D'autres outils sont peut-être disponibles sur LendLoop.` },\n    'loan.returned': { subject: (e) => `Rendu : ${e.tool}`, body: (e) => `${e.other} a marqué ${e.tool} comme rendu. Merci pour cet emprunt !` },\n    due_tomorrow_reminder: { subject: (e) => `Rappel : ${e.tool} est à rendre demain`, body: (e) => `${e.tool}, emprunté à ${e.other}, est à rendre demain (${e.end}).` },\n    overdue_reminder: { subject: (e) => `En retard : merci de rendre ${e.tool}`, body: (e) => `${e.tool}, emprunté à ${e.other}, devait être rendu le ${e.end}. Merci de le rendre au plus vite.` },\n    greeting: (name) => `Bonjour ${name},`,\n    footer: 'Vous recevez cet email car vous utilisez LendLoop.',\n  },\n  zh: {\n    'loan.requested': { subject: (e) => `${e.other} 想借用您的 ${e.tool}`, body: (e) => `${e.other} 申请在 ${e.start} 至 ${e.end} 借用您的 ${e.tool}。请打开 LendLoop 批准或拒绝该申请。` },\n    'loan.cancelled': { subject: (e) => `${e.other} 取消了申请`, body: (e) => `${e.other} 取消了借用您的 ${e.tool} 的申请（${e.start} 至 ${e.end}）。` },\n    'loan.approved': { subject: (e) => `已批准：${e.tool}`, body: (e) => `好消息：${e.other} 批准了您在 ${e.start} 至 ${e.end} 借用 ${e.tool} 的申请。` },\n    'loan.declined': { subject: (e) => `申请被拒绝：${e.tool}`, body: (e) => `您借用 ${e.tool}（${e.start} 至 ${e.end}）的申请被拒绝。LendLoop 上可能还有其他可用工具。` },\n    'loan.returned': { subject: (e) => `已归还：${e.tool}`, body: (e) => `${e.other} 已将 ${e.tool} 标记为已归还。感谢您的借用！` },\n    due_tomorrow_reminder: { subject: (e) => `提醒：${e.tool} 明天到期`, body: (e) => `您从 ${e.other} 借用的 ${e.tool} 明天（${e.end}）到期。` },\n    overdue_reminder: { subject: (e) => `已逾期：请归还 ${e.tool}`, body: (e) => `您从 ${e.other} 借用的 ${e.tool} 应于 ${e.end} 归还。请尽快归还。` },\n    greeting: (name) => `${name}，您好：`,\n    footer: '您收到此邮件是因为您在使用 LendLoop。',\n  },\n  de: {\n    'loan.requested': { subject: (e) => `${e.other} möchte dein ${e.tool} ausleihen`, body: (e) => `${e.other} möchte dein ${e.tool} vom ${e.start} bis ${e.end} ausleihen. Öffne LendLoop, um die Anfrage anzunehmen oder abzulehnen.` },\n    'loan.cancelled': { subject: (e) => `${e.other} hat eine Anfrage storniert`, body: (e) => `${e.other} hat die Anfrage für dein ${e.tool} (${e.start} bis ${e.end}) storniert.` },\n    'loan.approved': { subject: (e) => `Angenommen: ${e.tool}`, body: (e) => `Gute Nachricht: ${e.other} hat deine Anfrage für ${e.tool} vom ${e.start} bis ${e.end} angenommen.` },\n    'loan.declined': { subject: (e) => `Anfrage abgelehnt: ${e.tool}`, body: (e) => `Deine Anfrage für ${e.tool} (${e.start} bis ${e.end}) wurde abgelehnt. Auf LendLoop gibt es vielleicht andere verfügbare Werkzeuge.` },\n    'loan.returned': { subject: (e) => `Zurückgegeben: ${e.tool}`, body: (e) => `${e.other} hat ${e.tool} als zurückgegeben markiert. Danke fürs verantwortungsvolle Ausleihen!` },\n    due_tomorrow_reminder: { subject: (e) => `Erinnerung: ${e.tool} ist morgen fällig`, body: (e) => `${e.tool}, ausgeliehen von ${e.other}, ist morgen (${e.end}) zurückzugeben.` },\n    overdue_reminder: { subject: (e) => `Überfällig: bitte gib ${e.tool} zurück`, body: (e) => `${e.tool}, ausgeliehen von ${e.other}, war am ${e.end} fällig. Bitte gib es so bald wie möglich zurück.` },\n    greeting: (name) => `Hallo ${name},`,\n    footer: 'Du erhältst diese E-Mail, weil du LendLoop nutzt.',\n  },\n};\n\nconst escapeHtml = (value) =>\n  String(value).replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' })[c]);\n\n/** Builds { to, subject, text, html } in the recipient's language (English fallback). */\nfunction composeEmail(kind, recipient, vars) {\n  const lang = MESSAGES[recipient.locale] ? recipient.locale : 'en';\n  const t = MESSAGES[lang];\n  const template = t[kind] || MESSAGES.en[kind];\n  const subject = template.subject(vars);\n  const body = template.body(vars);\n  const greeting = t.greeting(recipient.firstName);\n  return {\n    to: recipient.email,\n    subject,\n    text: `${greeting}\\n\\n${body}\\n\\n— LendLoop\\n${t.footer}`,\n    html:\n      `<div style=\"font-family:Arial,sans-serif;font-size:15px;color:#1f2937;max-width:560px\">` +\n      `<p style=\"font-size:18px;font-weight:600;color:#065f46\">LendLoop</p>` +\n      `<p>${escapeHtml(greeting)}</p><p>${escapeHtml(body)}</p>` +\n      `<p style=\"color:#6b7280;font-size:12px;margin-top:24px\">${escapeHtml(t.footer)}</p></div>`,\n  };\n}\n\n// Workflow 1 · Compose email (MESSAGES and composeEmail are inlined above by the build script)\nconst { event } = $input.first().json;\nconst email = composeEmail(event.type, event.recipient, {\n  other: event.otherPartyFirstName,\n  tool: event.loan.toolName,\n  start: event.loan.startDate,\n  end: event.loan.endDate,\n});\nreturn [{ json: { ...email, eventId: event.eventId, loanId: event.loan.id } }];\n"
+      }
+    },
+    {
+      "id": "lendloop-8",
+      "name": "Send email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1100,
+        300
+      ],
+      "parameters": {
+        "fromEmail": "LendLoop <no-reply@lendloop.local>",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "both",
+        "text": "={{ $json.text }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "smtp": {
+          "id": "lendloopMailpit1",
+          "name": "Mailpit (local)"
+        }
+      }
+    },
+    {
+      "id": "lendloop-9",
+      "name": "Remember and sign result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Workflow 1 · Remember and sign result\n// The email went out: remember the eventId (so a retry from Convex is not sent\n// twice) and sign the write-back with HMAC_SECRET_N8N_TO_CONVEX.\nconst crypto = require('crypto');\n\nconst { eventId, loanId } = $('Compose email').first().json;\nconst staticData = $getWorkflowStaticData('global');\nconst handled = staticData.handledEventIds || [];\nif (!handled.includes(eventId)) handled.push(eventId);\nstaticData.handledEventIds = handled.slice(-1000);\n\nconst body = JSON.stringify({ eventId, loanId, channel: 'email' });\nconst timestamp = String(Date.now());\nconst signature = crypto\n  .createHmac('sha256', $env.HMAC_SECRET_N8N_TO_CONVEX)\n  .update(`${timestamp}.${body}`)\n  .digest('hex');\nreturn [{ json: { body, timestamp, signature } }];\n"
+      }
+    },
+    {
+      "id": "lendloop-10",
+      "name": "Report to Convex",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CONVEX_SITE_URL }}/n8n/notification-result",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-LendLoop-Timestamp",
+              "value": "={{ $json.timestamp }}"
+            },
+            {
+              "name": "X-LendLoop-Signature",
+              "value": "={{ $json.signature }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "lendloop-11",
+      "name": "Respond sent",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"sent\" }",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Signature valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature valid?": {
+      "main": [
+        [
+          {
+            "node": "Already handled?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject (401)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Already handled?": {
+      "main": [
+        [
+          {
+            "node": "Ignore duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Compose email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose email": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Remember and sign result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remember and sign result": {
+      "main": [
+        [
+          {
+            "node": "Report to Convex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report to Convex": {
+      "main": [
+        [
+          {
+            "node": "Respond sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

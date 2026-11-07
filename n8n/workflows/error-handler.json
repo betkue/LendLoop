@@ -1,0 +1,93 @@
+{
+  "id": "LendLoopErrors01",
+  "name": "LendLoop · Error handler",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "id": "lendloop-19",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "lendloop-20",
+      "name": "Build report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Error workflow · Build report\n// Runs when workflow 1 or 2 fails after its retries. Logs the failure and\n// prepares a signed report for Convex; when the failing item carried a loan id,\n// Convex shows \"An automation failed\" in that loan's history.\nconst crypto = require('crypto');\n\nconst { execution = {}, workflow = {} } = $input.first().json;\nconst error = execution.error || {};\nconst loanId = (() => {\n  try {\n    const lastNode = execution.lastNodeExecuted;\n    const data = lastNode ? $(lastNode).first().json : {};\n    return data.loanId || (data.event && data.event.loan && data.event.loan.id) || undefined;\n  } catch {\n    return undefined;\n  }\n})();\n\nconst report = {\n  eventId: `error:${execution.id || Date.now()}`,\n  workflow: workflow.name || 'unknown',\n  node: execution.lastNodeExecuted || 'unknown',\n  message: String(error.message || 'Unknown error').slice(0, 300),\n  ...(loanId ? { loanId } : {}),\n};\nconsole.log('LendLoop automation failure', JSON.stringify(report));\n\nconst body = JSON.stringify(report);\nconst timestamp = String(Date.now());\nconst signature = crypto\n  .createHmac('sha256', $env.HMAC_SECRET_N8N_TO_CONVEX)\n  .update(`${timestamp}.${body}`)\n  .digest('hex');\nreturn [{ json: { body, timestamp, signature } }];\n"
+      }
+    },
+    {
+      "id": "lendloop-21",
+      "name": "Report to Convex",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CONVEX_SITE_URL }}/n8n/automation-error",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-LendLoop-Timestamp",
+              "value": "={{ $json.timestamp }}"
+            },
+            {
+              "name": "X-LendLoop-Signature",
+              "value": "={{ $json.signature }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build report": {
+      "main": [
+        [
+          {
+            "node": "Report to Convex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

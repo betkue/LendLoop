@@ -6,12 +6,13 @@ Neighbors list the tools they own, request others for a date range, approve or d
 
 Built with **Next.js 16 (App Router)**, **Clerk**, **Convex**, **n8n** and **TypeScript**.
 
-To try it quickly, load the demo data and sign in with one of the [demo accounts](#demo-accounts), the admin one included.
+**Live demo: https://lendloop.smilylab.fr.** Sign in with one of the [demo accounts](#demo-accounts), the admin one included. Every email the automations send lands in the demo inbox at https://lendloop.smilylab.fr/mail/ (user `demo`, password sent with the application). To run it yourself, see [Local setup](#local-setup).
 
 - [Features](#features)
 - [Architecture](#architecture)
 - [Security and data minimization](#security-and-data-minimization)
 - [Local setup](#local-setup) and [demo accounts](#demo-accounts)
+- [Live deployment](#live-deployment)
 - [Environment variables](#environment-variables)
 - [n8n workflows](#n8n-workflows)
 - [Tests](#tests)
@@ -125,12 +126,14 @@ cp n8n/.env.example n8n/.env        # paste the same two secrets, add an encrypt
 docker compose -f n8n/docker-compose.yml up -d
 ```
 
-The three workflows are imported automatically. In n8n (http://localhost:5678):
+Nothing to click in n8n: on first start, [n8n/entrypoint.sh](n8n/entrypoint.sh) imports the Mailpit SMTP credential and the three workflows, and activates "Loan notifications" and "Daily reminders" (the error handler runs on its own). Later starts leave them as they are. After editing `n8n/workflows/`, re-import with:
 
-1. Create an **SMTP** credential named `Mailpit (local)`: host `mailpit`, port `1025`, no user, SSL off.
-2. Open each workflow, select that credential on the email nodes if asked, and **activate** "Loan notifications" and "Daily reminders" (the error handler runs on its own).
+```bash
+docker compose -f n8n/docker-compose.yml exec n8n rm /home/node/.n8n/.lendloop-imported
+docker compose -f n8n/docker-compose.yml restart n8n
+```
 
-Emails land in Mailpit at http://localhost:8025.
+The n8n editor is at http://localhost:5678 (create the owner account on first visit) and emails land in Mailpit at http://localhost:8025.
 
 **4. Next.js**
 
@@ -158,6 +161,20 @@ The script needs development Clerk keys (`sk_test_`) and refuses production keys
 | `admin+clerk_test@lendloop.dev` | English | **admin**: moderation only, no listings or loans |
 
 They all share the password set in `DEMO_PASSWORD` in [scripts/seed-demo.mts](scripts/seed-demo.mts). If Clerk asks for an email code, enter `424242`: `+clerk_test` addresses receive no real email. Rerunning the script resets the demo data first. `npx convex run seed:reset` removes it and keeps real accounts.
+
+## Live deployment
+
+https://lendloop.smilylab.fr runs the same code on a small Ubuntu server, behind Cloudflare.
+
+| Part | How it runs |
+| --- | --- |
+| Next.js | `next build`, then `next start` under PM2, behind Caddy (HTTPS, security headers). It listens on `localhost`, not `127.0.0.1`: Next.js compares the two literally and would otherwise proxy its own internal rewrites to itself. |
+| Convex | Convex Cloud production deployment, with its own HMAC secrets (`npx convex env set --prod …`, `npx convex deploy`), seeded with `npm run seed -- --prod` |
+| n8n + Mailpit | The same `n8n/docker-compose.yml`, plus a server-only override that sets `WEBHOOK_URL` and serves Mailpit under `/mail/`. Both containers listen on `127.0.0.1` only. |
+| Public surface | Caddy exposes only the signed webhook `/webhook/lendloop-events` and the password-protected inbox `/mail/`; the n8n editor is not reachable from the internet. |
+| Clerk | The development instance, so the `+clerk_test` demo accounts work. A real launch would use a Clerk production instance on its own domain. |
+
+Checked end to end on the live deployment: a loan request and its approval each sent an email to the right person in their language, n8n's signed write-back appeared in the loan history, an unsigned webhook call and an unsigned call to `/n8n/due-reminders` were both rejected with 401, and events queued while n8n was misconfigured were delivered once it was fixed (outbox retries).
 
 ## Environment variables
 
@@ -205,7 +222,7 @@ components/layout        header, nav, footer, language switcher, logo
 hooks/  lib/  providers/ cross-cutting hooks, utilities, global providers
 i18n/  messages/         next-intl routing and the en, fr, zh, de messages
 convex/                  schema, public API (users, tools, loans, admin), model/ rules, outbox, http, crons, seed, tests
-n8n/                     docker-compose, Code node sources, generated workflows
+n8n/                     docker-compose, first-start entrypoint, Mailpit credential, Code node sources, generated workflows
 scripts/                 demo seed (Clerk test accounts + Convex data), message key check
 test/                    convex-test setup and helpers
 public/seed/             credits of the demo photos
@@ -214,7 +231,7 @@ doc/                     specification (en, fr)
 
 ## What I would change for production
 
-- **Hosting**: Convex cloud production deployment and n8n behind HTTPS (or n8n Cloud); the webhook URL and `CONVEX_SITE_URL` then point to public HTTPS endpoints.
+- **Hosting**: the live demo already runs Convex Cloud and n8n behind HTTPS. A real launch would add a Clerk production instance, managed hosting for Next.js (or containers on AWS ECS/Fargate), and n8n on a managed database instead of its default SQLite.
 - **Email**: a transactional provider (Postmark, Resend, SES) with SPF/DKIM instead of Mailpit, and per-user notification preferences.
 - **Secret rotation**: support two active HMAC secrets per direction during rotation.
 - **Rate limiting** on loan requests and uploads (e.g. the Convex rate-limiter component).

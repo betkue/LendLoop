@@ -135,14 +135,15 @@ Sign up with the email you put in `ADMIN_EMAILS` to get the admin area.
 node scripts/seed-demo.mts --me you@example.com   # --me is optional: your account also gets listings and history
 ```
 
-The script needs development Clerk keys (`sk_test_`) and refuses production keys. It creates four neighbors in the Clerk development instance, then fills Convex with 15 tools with photos and about 30 loans in every status: pending (including two overlapping requests), current, due tomorrow, overdue, returned, declined, cancelled. The loans come with their notification and reminder history.
+The script needs development Clerk keys (`sk_test_`) and refuses production keys. It creates four neighbors and an admin account in the Clerk development instance, then fills Convex with 15 tools with photos and about 30 loans in every status: pending (including two overlapping requests), current, due tomorrow, overdue, returned, declined, cancelled. The loans come with their notification and reminder history.
 
 | Account | Language | Role |
 | --- | --- | --- |
 | `awa+clerk_test@lendloop.dev` | French | member, trusted lender |
 | `marc+clerk_test@lendloop.dev` | French | member |
 | `lea+clerk_test@lendloop.dev` | English | member |
-| `sophie+clerk_test@lendloop.dev` | German | admin (given by the seed), trusted lender |
+| `sophie+clerk_test@lendloop.dev` | German | member, trusted lender |
+| `admin+clerk_test@lendloop.dev` | English | **admin**: moderation only, no listings or loans |
 
 They all share the password set in `DEMO_PASSWORD` in [scripts/seed-demo.mts](scripts/seed-demo.mts). If Clerk asks for an email code, enter `424242`: `+clerk_test` addresses receive no real email. Rerunning the script resets the demo data first. `npx convex run seed:reset` removes it and keeps real accounts.
 

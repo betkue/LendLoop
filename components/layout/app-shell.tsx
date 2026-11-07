@@ -17,7 +17,7 @@ export function AppShell({
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <Header userMenu={userMenu} showAdmin={showAdmin} onLocaleChange={onLocaleChange} />
+      <Header member userMenu={userMenu} showAdmin={showAdmin} onLocaleChange={onLocaleChange} />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-10">{children}</main>
       <Footer />
     </div>

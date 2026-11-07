@@ -33,7 +33,9 @@ export default defineSchema({
     imageId: v.optional(v.id("_storage")),
   })
     .index("by_owner", ["ownerId"])
-    .index("by_category", ["category"]),
+    .index("by_category", ["category"])
+    // Full-text search on the tool name, optionally within one category.
+    .searchIndex("search_name", { searchField: "name", filterFields: ["category"] }),
 
   loans: defineTable({
     toolId: v.id("tools"),

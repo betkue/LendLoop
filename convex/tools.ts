@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
 import type { QueryCtx } from "./_generated/server";
-import { requireOwner, requireUser } from "./lib/auth";
+import { getCurrentUser, requireOwner, requireUser } from "./lib/auth";
 import { appError } from "./lib/errors";
 import {
   approvedLoans,
@@ -55,6 +55,69 @@ export const listPublic = query({
       });
     }
     return result;
+  },
+});
+
+const CATALOG_LIMIT = 60;
+
+/**
+ * Catalog pages (all tools, one category, search results), open to visitors.
+ * Visitors get name, category, photo and availability only; signed-in members
+ * also get the owner's first name, the Trusted Lender flag and "is mine".
+ */
+export const catalog = query({
+  args: { category: v.optional(vCategory), search: v.optional(v.string()) },
+  handler: async (ctx, { category, search }) => {
+    const viewer = await getCurrentUser(ctx);
+    const term = search?.trim().slice(0, 80) ?? "";
+
+    const tools = term
+      ? await ctx.db
+          .query("tools")
+          .withSearchIndex("search_name", (q) =>
+            category ? q.search("name", term).eq("category", category) : q.search("name", term),
+          )
+          .take(CATALOG_LIMIT)
+      : category
+        ? await ctx.db
+            .query("tools")
+            .withIndex("by_category", (q) => q.eq("category", category))
+            .order("desc")
+            .take(CATALOG_LIMIT)
+        : await ctx.db.query("tools").order("desc").take(CATALOG_LIMIT);
+
+    return await Promise.all(
+      tools.map(async (tool) => {
+        const base = {
+          _id: tool._id,
+          name: tool.name,
+          category: tool.category,
+          condition: tool.condition,
+          imageUrl: await imageUrl(ctx, tool.imageId),
+          available: await isAvailableToday(ctx, tool._id),
+        };
+        if (!viewer) return { ...base, ownerName: null, trustedLender: false, isMine: false };
+        const owner = await ctx.db.get(tool.ownerId);
+        return {
+          ...base,
+          ownerName: owner?.name.split(" ")[0] ?? "",
+          trustedLender: owner?.trustedLender ?? false,
+          isMine: tool.ownerId === viewer._id,
+        };
+      }),
+    );
+  },
+});
+
+/** Number of tools per category, for the categories menu and landing tiles. */
+export const categoryCounts = query({
+  args: {},
+  handler: async (ctx) => {
+    const counts: Record<string, number> = {};
+    for (const tool of await ctx.db.query("tools").collect()) {
+      counts[tool.category] = (counts[tool.category] ?? 0) + 1;
+    }
+    return counts;
   },
 });
 

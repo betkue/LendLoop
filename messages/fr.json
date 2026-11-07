@@ -213,6 +213,13 @@
       "returnDescription": "L'outil redevient disponible."
     },
     "toolRemoved": "Outil retiré",
-    "requestedOn": "Demandé le {date}"
+    "requestedOn": "Demandé le {date}",
+    "activity": {
+      "title": "Activité automatique",
+      "notification_sent": "Notification envoyée",
+      "due_tomorrow_reminder_sent": "Rappel de la veille envoyé",
+      "overdue_reminder_sent": "Rappel de retard envoyé",
+      "automation_failed": "Une automatisation a échoué"
+    }
   }
 }

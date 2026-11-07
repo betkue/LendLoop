@@ -213,6 +213,13 @@
       "returnDescription": "The tool becomes available again."
     },
     "toolRemoved": "Tool no longer listed",
-    "requestedOn": "Requested {date}"
+    "requestedOn": "Requested {date}",
+    "activity": {
+      "title": "Automation activity",
+      "notification_sent": "Notification sent",
+      "due_tomorrow_reminder_sent": "Day-before reminder sent",
+      "overdue_reminder_sent": "Overdue reminder sent",
+      "automation_failed": "An automation failed"
+    }
   }
 }

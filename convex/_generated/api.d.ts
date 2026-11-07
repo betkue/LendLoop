@@ -22,6 +22,7 @@ import type * as model_outbox from "../model/outbox.js";
 import type * as model_tools from "../model/tools.js";
 import type * as model_users from "../model/users.js";
 import type * as outbox from "../outbox.js";
+import type * as seed from "../seed.js";
 import type * as shared_constants from "../shared/constants.js";
 import type * as shared_dates from "../shared/dates.js";
 import type * as shared_loanRules from "../shared/loanRules.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   "model/tools": typeof model_tools;
   "model/users": typeof model_users;
   outbox: typeof outbox;
+  seed: typeof seed;
   "shared/constants": typeof shared_constants;
   "shared/dates": typeof shared_dates;
   "shared/loanRules": typeof shared_loanRules;

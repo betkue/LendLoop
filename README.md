@@ -103,7 +103,6 @@ npx convex env set ADMIN_EMAILS you@example.com
 npx convex env set N8N_NOTIFY_WEBHOOK_URL http://localhost:5678/webhook/lendloop-events
 npx convex env set HMAC_SECRET_CONVEX_TO_N8N <secret-1>
 npx convex env set HMAC_SECRET_N8N_TO_CONVEX <secret-2>
-npx convex run seed:run                                 # demo neighbors, tools with photos, loans
 ```
 
 Generate each secret with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Keep `npx convex dev` running.
@@ -128,7 +127,24 @@ Emails land in Mailpit at http://localhost:8025.
 npm run dev                          # http://localhost:3000
 ```
 
-Sign up with the email you put in `ADMIN_EMAILS` to get the admin area. `npx convex run seed:reset` removes the demo data and keeps real accounts.
+Sign up with the email you put in `ADMIN_EMAILS` to get the admin area.
+
+**5. Demo data**
+
+```bash
+node scripts/seed-demo.mts --me you@example.com   # --me is optional: your account also gets listings and history
+```
+
+The script needs development Clerk keys (`sk_test_`) and refuses production keys. It creates four neighbors in the Clerk development instance, then fills Convex with 15 tools with photos and about 30 loans in every status: pending (including two overlapping requests), current, due tomorrow, overdue, returned, declined, cancelled. The loans come with their notification and reminder history.
+
+| Account | Language | Role |
+| --- | --- | --- |
+| `awa+clerk_test@lendloop.dev` | French | member, trusted lender |
+| `marc+clerk_test@lendloop.dev` | French | member |
+| `lea+clerk_test@lendloop.dev` | English | member |
+| `sophie+clerk_test@lendloop.dev` | German | admin (given by the seed), trusted lender |
+
+They all share the password set in `DEMO_PASSWORD` in [scripts/seed-demo.mts](scripts/seed-demo.mts). If Clerk asks for an email code, enter `424242`: `+clerk_test` addresses receive no real email. Rerunning the script resets the demo data first. `npx convex run seed:reset` removes it and keeps real accounts.
 
 ## Environment variables
 

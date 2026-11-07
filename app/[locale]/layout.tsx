@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Geist, Geist_Mono, Noto_Sans_SC } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -11,14 +11,6 @@ import "../globals.css";
 const geistSans = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
-});
-
-// Chinese glyphs, only applied (and downloaded) on /zh pages.
-const notoSansSC = Noto_Sans_SC({
-  weight: ["400", "500", "600"],
-  variable: "--font-sans",
-  preload: false,
-  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -53,7 +45,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   return (
     <html
       lang={locale}
-      className={`${locale === "zh" ? notoSansSC.variable : geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>

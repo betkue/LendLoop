@@ -9,7 +9,9 @@
  */
 
 import type * as admin from "../admin.js";
+import type * as automation from "../automation.js";
 import type * as crons from "../crons.js";
+import type * as http from "../http.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_errors from "../lib/errors.js";
 import type * as lib_hmac from "../lib/hmac.js";
@@ -35,7 +37,9 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
+  automation: typeof automation;
   crons: typeof crons;
+  http: typeof http;
   "lib/auth": typeof lib_auth;
   "lib/errors": typeof lib_errors;
   "lib/hmac": typeof lib_hmac;

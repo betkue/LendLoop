@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useConvexAuth, usePreloadedQuery, type Preloaded } from "convex/react";
 import { useTranslations } from "next-intl";
 import { ArrowRightIcon, CalendarRangeIcon, PackagePlusIcon, RefreshCwIcon, WrenchIcon } from "lucide-react";
+import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { Reveal, Stagger, StaggerItem } from "@/components/shared/motion";
 import { EmptyState } from "@/components/shared/states";
@@ -121,6 +122,7 @@ export function PublicLanding({ preloadedTools }: { preloadedTools: Preloaded<ty
           )}
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

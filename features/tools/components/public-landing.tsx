@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import type { api } from "@/convex/_generated/api";
 import { Link } from "@/i18n/navigation";
 import { routes } from "@/lib/routes";
+import { CATEGORIES } from "@/convex/shared/constants";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
+import { useCategoryCounts } from "../hooks/use-tools";
 import type { PublicTool } from "../types";
 import { CategoryBadge } from "./tool-badges";
 import { ToolImage } from "./tool-image";
@@ -35,15 +38,56 @@ function AuthCta({ className }: { className?: string }) {
   );
 }
 
+/** Available tool on the landing page; clicking opens it (sign-in first for visitors). */
 function PublicToolCard({ tool }: { tool: PublicTool }) {
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
-      <ToolImage src={tool.imageUrl} alt={tool.name} category={tool.category} />
+    <Link
+      href={routes.tool(tool._id)}
+      className="group block cursor-pointer overflow-hidden rounded-xl border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+    >
+      <div className="overflow-hidden">
+        <ToolImage
+          src={tool.imageUrl}
+          alt={tool.name}
+          category={tool.category}
+          className="transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+      </div>
       <div className="space-y-2 p-4">
-        <h3 className="line-clamp-1 font-medium">{tool.name}</h3>
+        <h3 className="line-clamp-1 font-medium group-hover:text-primary">{tool.name}</h3>
         <CategoryBadge category={tool.category} />
       </div>
-    </div>
+    </Link>
+  );
+}
+
+/** "Shop by category" tiles with the number of tools in each. */
+function CategoryTiles() {
+  const t = useTranslations("tools");
+  const tCatalog = useTranslations("catalog");
+  const counts = useCategoryCounts();
+  return (
+    <Stagger className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      {CATEGORIES.map((category) => {
+        const Icon = CATEGORY_ICONS[category];
+        return (
+          <StaggerItem key={category}>
+            <Link
+              href={routes.category(category)}
+              className="group flex h-full cursor-pointer flex-col items-start gap-3 rounded-xl border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+            >
+              <span className="grid size-10 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <Icon className="size-5" aria-hidden="true" />
+              </span>
+              <span className="font-medium">{t(`categories.${category}`)}</span>
+              <span className="text-sm text-muted-foreground">
+                {tCatalog("count", { count: counts?.[category] ?? 0 })}
+              </span>
+            </Link>
+          </StaggerItem>
+        );
+      })}
+    </Stagger>
   );
 }
 
@@ -63,7 +107,7 @@ export function PublicLanding({ preloadedTools }: { preloadedTools: Preloaded<ty
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <Header showNav={false} actions={<AuthCta className="hidden h-9 gap-2 sm:inline-flex" />} />
+      <Header actions={<AuthCta className="hidden h-9 gap-2 lg:inline-flex" />} />
 
       <section className="border-b">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:py-20 [&>*]:min-w-0">
@@ -91,6 +135,17 @@ export function PublicLanding({ preloadedTools }: { preloadedTools: Preloaded<ty
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6">
+        <Reveal className="flex items-end justify-between gap-4">
+          <h2 className="text-2xl font-semibold tracking-tight">{t("categoriesTitle")}</h2>
+          <Link href={routes.tools} className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+            {t("seeCatalog")}
+            <ArrowRightIcon className="size-4" aria-hidden="true" />
+          </Link>
+        </Reveal>
+        <CategoryTiles />
+      </section>
+
       <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
         <Reveal>
           <h2 className="text-2xl font-semibold tracking-tight">{t("howTitle")}</h2>
@@ -110,9 +165,15 @@ export function PublicLanding({ preloadedTools }: { preloadedTools: Preloaded<ty
 
       <section className="border-t bg-muted/40">
         <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
-          <Reveal className="space-y-1">
-            <h2 className="text-2xl font-semibold tracking-tight">{t("availableTitle")}</h2>
-            <p className="text-muted-foreground">{t("availableSubtitle")}</p>
+          <Reveal className="flex flex-wrap items-end justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-2xl font-semibold tracking-tight">{t("availableTitle")}</h2>
+              <p className="text-muted-foreground">{t("availableSubtitle")}</p>
+            </div>
+            <Link href={routes.tools} className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              {t("seeCatalog")}
+              <ArrowRightIcon className="size-4" aria-hidden="true" />
+            </Link>
           </Reveal>
           {tools.length === 0 ? (
             <EmptyState

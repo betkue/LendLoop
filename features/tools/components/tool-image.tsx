@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Category } from "@/convex/shared/constants";
 import { cn } from "@/lib/utils";
-import { CATEGORY_ICONS } from "../constants";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
 
 /**
  * Tool photo in a fixed 4:3 frame, or the category icon when there is none.

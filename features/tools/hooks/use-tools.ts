@@ -5,9 +5,17 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { Category } from "@/convex/shared/constants";
 
-/** Live list of all tools, optionally filtered by category; undefined while loading. */
-export function useTools(category: Category | null) {
-  return useQuery(api.tools.list, category ? { category } : {});
+/** Catalog items (public), optionally by category and/or name search; undefined while loading. */
+export function useCatalog({ category, search }: { category?: Category | null; search?: string | null }) {
+  return useQuery(api.tools.catalog, {
+    ...(category && { category }),
+    ...(search && { search }),
+  });
+}
+
+/** Number of tools per category. */
+export function useCategoryCounts() {
+  return useQuery(api.tools.categoryCounts);
 }
 
 /** Live data of one tool; null when it no longer exists, undefined while loading. */

@@ -3,7 +3,7 @@ import { CircleCheckIcon, CircleDotIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Category } from "@/convex/shared/constants";
 import { cn } from "@/lib/utils";
-import { CATEGORY_ICONS } from "../constants";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
 
 export function CategoryBadge({ category, className }: { category: Category; className?: string }) {
   const t = useTranslations("tools.categories");

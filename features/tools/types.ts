@@ -9,3 +9,6 @@ export type PublicTool = FunctionReturnType<typeof api.tools.listPublic>[number]
 
 /** A row of "My listings", with pending requests and loan status. */
 export type MyListing = FunctionReturnType<typeof api.tools.myListings>[number];
+
+/** A catalog item: owner fields are null/false for visitors (tools.catalog). */
+export type CatalogTool = FunctionReturnType<typeof api.tools.catalog>[number];

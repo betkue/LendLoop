@@ -7,6 +7,8 @@ export const routes = {
   signIn: "/sign-in",
   signUp: "/sign-up",
   tools: "/tools",
+  category: (category: string) => `/categories/${category}`,
+  search: (query: string) => `/search?q=${encodeURIComponent(query)}`,
   newTool: "/tools/new",
   tool: (id: string) => `/tools/${id}`,
   editTool: (id: string) => `/tools/${id}/edit`,

@@ -1,1 +1,269 @@
-{}
+{
+  "Metadata": {
+    "title": "LendLoop",
+    "description": "需要什么就借什么，闲置什么就借出什么。"
+  },
+  "LanguageSwitcher": {
+    "label": "切换语言"
+  },
+  "errors": {
+    "UNAUTHENTICATED": "请先登录再继续。",
+    "FORBIDDEN": "您无权执行此操作。",
+    "NOT_FOUND": "该内容已不存在。",
+    "INVALID_INPUT": "部分字段无效，请检查表单。",
+    "INVALID_DATES": "请选择不早于开始日期且不在过去的结束日期。",
+    "DATES_OVERLAP": "所选日期与该工具已批准的借用时间重叠。",
+    "OWN_TOOL": "您不能借用自己的工具。",
+    "TOOL_HAS_ACTIVE_LOAN": "该工具正在借出中，暂时无法删除。",
+    "INVALID_TRANSITION": "该申请已无法更改。",
+    "UNKNOWN": "出现问题，请重试。"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "back": "返回",
+    "retry": "重试",
+    "loading": "加载中…",
+    "trustedLender": "可信出借人",
+    "close": "关闭",
+    "openMenu": "打开菜单"
+  },
+  "dateRange": {
+    "placeholder": "选择开始和结束日期",
+    "unavailableHint": "灰色日期已被预订。"
+  },
+  "nav": {
+    "label": "主导航",
+    "tools": "浏览工具",
+    "myListings": "我的发布",
+    "myRequests": "我的申请",
+    "incoming": "收到的申请",
+    "admin": "管理"
+  },
+  "footer": {
+    "tagline": "LendLoop —— 需要什么就借什么，闲置什么就借出什么。",
+    "credits": "图片来自 Unsplash"
+  },
+  "auth": {
+    "adminBadge": "管理员",
+    "heroAlt": "挂在工作间洞洞板上的手工工具",
+    "heroTitle": "社区共享的工具箱。",
+    "heroPoint1": "向邻居借用，而不是购买",
+    "heroPoint2": "预订的日期永不冲突",
+    "heroPoint3": "每个申请都由物主做主"
+  },
+  "tools": {
+    "categories": {
+      "diy": "DIY 工具",
+      "garden": "园艺",
+      "kitchen": "厨房",
+      "cleaning": "清洁",
+      "sports": "运动与户外",
+      "other": "其他"
+    },
+    "conditions": {
+      "new": "全新",
+      "good": "良好",
+      "fair": "一般",
+      "worn": "有磨损"
+    },
+    "availability": {
+      "available": "可借用",
+      "onLoan": "借出中"
+    },
+    "landing": {
+      "title": "需要什么就借什么，闲置什么就借出什么。",
+      "subtitle": "LendLoop 让邻居们共享电钻、梯子、割草机等工具——每件工具都物尽其用，没人需要为一次性的活儿专门购买。",
+      "signIn": "登录以借出或借用",
+      "openApp": "打开 LendLoop",
+      "availableTitle": "附近可借用",
+      "availableSubtitle": "看看邻居们现在正在出借什么。",
+      "emptyTitle": "暂无工具",
+      "emptyDescription": "成为第一个出借工具的邻居吧。",
+      "heroAlt": "安静社区里的住宅",
+      "howTitle": "使用方式",
+      "step1Title": "发布您的工具",
+      "step1Text": "添加照片、类别和简短描述。",
+      "step2Title": "申请借用时段",
+      "step2Text": "邻居选择仍然空闲的日期。",
+      "step3Title": "出借并收回",
+      "step3Text": "由您批准申请，并标记工具已归还。"
+    },
+    "browse": {
+      "title": "浏览工具",
+      "subtitle": "邻居们正在出借的所有工具。",
+      "listTool": "发布工具",
+      "all": "全部",
+      "filterLabel": "按类别筛选",
+      "emptyTitle": "该类别暂无工具",
+      "emptyDescription": "试试其他类别，或者自己发布一件。",
+      "by": "出借人：{name}"
+    },
+    "detail": {
+      "condition": "成色",
+      "owner": "出借人",
+      "edit": "编辑发布",
+      "yours": "这是您发布的工具",
+      "backToTools": "全部工具",
+      "notFoundTitle": "该工具已下架",
+      "notFoundDescription": "可能已被物主删除。"
+    },
+    "form": {
+      "createTitle": "发布工具",
+      "createSubtitle": "邻居会看到照片、名称和类别。",
+      "editTitle": "编辑发布",
+      "name": "名称",
+      "namePlaceholder": "例如：无绳电钻",
+      "category": "类别",
+      "condition": "成色",
+      "description": "描述",
+      "descriptionPlaceholder": "包含哪些配件、如何使用、需要注意什么。",
+      "photo": "照片",
+      "photoHint": "JPEG、PNG 或 WebP，不超过 5 MB。",
+      "choosePhoto": "选择照片",
+      "changePhoto": "更换",
+      "removePhoto": "移除",
+      "submitCreate": "发布",
+      "submitEdit": "保存修改",
+      "created": "您的工具已发布。",
+      "updated": "发布已更新。",
+      "errors": {
+        "nameRequired": "请为工具命名。",
+        "nameTooLong": "名称请控制在 80 个字符以内。",
+        "descriptionTooLong": "描述请控制在 500 个字符以内。",
+        "photoType": "请使用 JPEG、PNG 或 WebP 图片。",
+        "photoSize": "照片不能超过 5 MB。",
+        "upload": "照片上传失败，请重试。"
+      }
+    },
+    "listings": {
+      "title": "我的发布",
+      "subtitle": "您借给社区的工具。",
+      "emptyTitle": "暂无发布",
+      "emptyDescription": "发布您的第一件工具，让邻居可以借用。",
+      "colTool": "工具",
+      "colCategory": "类别",
+      "colStatus": "状态",
+      "colRequests": "待处理申请",
+      "colActions": "操作",
+      "deleteTitle": "删除此发布？",
+      "deleteDescription": "待处理的申请将被拒绝。此操作无法撤销。",
+      "deleted": "发布已删除。",
+      "deleteBlocked": "借出期间无法删除。"
+    }
+  },
+  "loans": {
+    "status": {
+      "pending": "待处理",
+      "approved": "已批准",
+      "declined": "已拒绝",
+      "cancelled": "已取消",
+      "returned": "已归还",
+      "overdue": "已逾期"
+    },
+    "toasts": {
+      "requested": "申请已发送给物主。",
+      "cancelled": "申请已取消。",
+      "approved": "申请已批准。",
+      "declined": "申请已拒绝。",
+      "returned": "已标记为归还。"
+    },
+    "request": {
+      "title": "借用此工具",
+      "subtitle": "选择需要的日期，物主会批准或拒绝。",
+      "dates": "日期",
+      "submit": "发送申请",
+      "signedOutHint": "登录后即可借用。",
+      "errors": {
+        "datesRequired": "请选择开始和结束日期。",
+        "datesInvalid": "请选择从今天起的日期，且结束日期不早于开始日期。"
+      }
+    },
+    "myRequests": {
+      "title": "我的申请",
+      "subtitle": "您申请借用的工具。",
+      "emptyTitle": "暂无申请",
+      "emptyDescription": "浏览工具，向邻居借一件吧。",
+      "browse": "浏览工具",
+      "cancel": "取消申请",
+      "cancelTitle": "取消此申请？",
+      "cancelDescription": "物主将收到通知。",
+      "owner": "物主：{name}"
+    },
+    "incoming": {
+      "title": "收到的申请",
+      "subtitle": "针对您出借工具的申请。",
+      "tabPending": "待处理",
+      "tabActive": "借出中",
+      "tabHistory": "历史",
+      "emptyPending": "没有待处理的申请",
+      "emptyActive": "目前没有借出的工具",
+      "emptyHistory": "暂无历史借用",
+      "emptyDescription": "新的申请会实时显示在这里。",
+      "borrower": "申请人：{name}",
+      "approve": "批准",
+      "decline": "拒绝",
+      "markReturned": "标记为已归还",
+      "overlapWarning": "这些日期与您已批准的借用时间重叠。",
+      "declineTitle": "拒绝此申请？",
+      "declineDescription": "借用人将收到通知。",
+      "returnTitle": "标记为已归还？",
+      "returnDescription": "该工具将重新可借。"
+    },
+    "toolRemoved": "工具已下架",
+    "requestedOn": "申请于 {date}",
+    "activity": {
+      "title": "自动化记录",
+      "notification_sent": "已发送通知",
+      "due_tomorrow_reminder_sent": "已发送到期前一天提醒",
+      "overdue_reminder_sent": "已发送逾期提醒",
+      "automation_failed": "自动化任务失败"
+    }
+  },
+  "admin": {
+    "title": "管理",
+    "subtitle": "管理借用记录和成员。",
+    "navLoans": "全部借用",
+    "navUsers": "成员",
+    "forbiddenTitle": "仅限管理员",
+    "forbiddenDescription": "此区域仅对管理员开放。",
+    "backToTools": "返回工具列表",
+    "filterLabel": "按状态筛选借用",
+    "filterAll": "全部",
+    "emptyLoans": "没有符合条件的借用",
+    "emptyUsers": "暂无成员",
+    "colTool": "工具",
+    "colOwner": "物主",
+    "colBorrower": "借用人",
+    "colDates": "日期",
+    "colStatus": "状态",
+    "colMember": "成员",
+    "colRole": "角色",
+    "colListings": "发布数",
+    "colBadge": "徽章",
+    "colActions": "操作",
+    "roleAdmin": "管理员",
+    "roleUser": "成员",
+    "grantBadge": "授予“可信出借人”",
+    "removeBadge": "移除徽章",
+    "moderation": "内容管理",
+    "removeListing": "下架此工具",
+    "removeTitle": "下架此工具？",
+    "removeDescription": "待处理的申请将被拒绝。借出期间无法下架。",
+    "toasts": {
+      "toolRemoved": "工具已下架。",
+      "badgeUpdated": "徽章已更新。"
+    }
+  },
+  "pages": {
+    "notFoundTitle": "页面不存在",
+    "notFoundDescription": "您要找的页面不存在或已移动。",
+    "goHome": "返回首页",
+    "errorTitle": "出现问题",
+    "errorDescription": "发生了意外错误，请重试。",
+    "retry": "重试"
+  }
+}

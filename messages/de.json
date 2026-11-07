@@ -1,1 +1,269 @@
-{}
+{
+  "Metadata": {
+    "title": "LendLoop",
+    "description": "Leih dir, was du brauchst. Verleih, was du nicht brauchst."
+  },
+  "LanguageSwitcher": {
+    "label": "Sprache ändern"
+  },
+  "errors": {
+    "UNAUTHENTICATED": "Bitte melde dich an, um fortzufahren.",
+    "FORBIDDEN": "Dazu bist du nicht berechtigt.",
+    "NOT_FOUND": "Dieser Eintrag existiert nicht mehr.",
+    "INVALID_INPUT": "Einige Felder sind ungültig. Bitte prüfe das Formular.",
+    "INVALID_DATES": "Wähle ein Enddatum ab dem Startdatum, nicht in der Vergangenheit.",
+    "DATES_OVERLAP": "Diese Daten überschneiden sich mit einer bestätigten Ausleihe dieses Werkzeugs.",
+    "OWN_TOOL": "Du kannst dein eigenes Werkzeug nicht ausleihen.",
+    "TOOL_HAS_ACTIVE_LOAN": "Dieses Werkzeug ist gerade verliehen und kann noch nicht entfernt werden.",
+    "INVALID_TRANSITION": "Diese Anfrage kann nicht mehr geändert werden.",
+    "UNKNOWN": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "retry": "Erneut versuchen",
+    "loading": "Wird geladen…",
+    "trustedLender": "Vertrauenswürdiger Verleiher",
+    "close": "Schließen",
+    "openMenu": "Menü öffnen"
+  },
+  "dateRange": {
+    "placeholder": "Start- und Enddatum wählen",
+    "unavailableHint": "Ausgegraute Tage sind bereits gebucht."
+  },
+  "nav": {
+    "label": "Hauptnavigation",
+    "tools": "Werkzeuge entdecken",
+    "myListings": "Meine Angebote",
+    "myRequests": "Meine Anfragen",
+    "incoming": "Eingegangene Anfragen",
+    "admin": "Admin"
+  },
+  "footer": {
+    "tagline": "LendLoop – leih dir, was du brauchst, verleih, was du nicht brauchst.",
+    "credits": "Fotos von Unsplash"
+  },
+  "auth": {
+    "adminBadge": "Admin",
+    "heroAlt": "Handwerkzeuge an einer Lochwand in einer Werkstatt",
+    "heroTitle": "Der Werkzeugkasten deiner Nachbarschaft, geteilt.",
+    "heroPoint1": "Von Nachbarn leihen statt kaufen",
+    "heroPoint2": "Zeiträume buchen, die sich nie überschneiden",
+    "heroPoint3": "Besitzer entscheiden über jede Anfrage"
+  },
+  "tools": {
+    "categories": {
+      "diy": "Heimwerken",
+      "garden": "Garten",
+      "kitchen": "Küche",
+      "cleaning": "Reinigung",
+      "sports": "Sport & Outdoor",
+      "other": "Sonstiges"
+    },
+    "conditions": {
+      "new": "Neu",
+      "good": "Gut",
+      "fair": "Ordentlich",
+      "worn": "Abgenutzt"
+    },
+    "availability": {
+      "available": "Verfügbar",
+      "onLoan": "Verliehen"
+    },
+    "landing": {
+      "title": "Leih dir, was du brauchst. Verleih, was du nicht brauchst.",
+      "subtitle": "LendLoop verbindet Nachbarn, die Bohrmaschinen, Leitern, Rasenmäher und mehr teilen – so wird jedes Werkzeug genutzt und niemand kauft eins für einen einzigen Einsatz.",
+      "signIn": "Anmelden zum Verleihen oder Ausleihen",
+      "openApp": "LendLoop öffnen",
+      "availableTitle": "In deiner Nähe verfügbar",
+      "availableSubtitle": "Ein Einblick in das, was Nachbarn gerade verleihen.",
+      "emptyTitle": "Noch keine Werkzeuge",
+      "emptyDescription": "Sei der erste Nachbar, der etwas verleiht.",
+      "heroAlt": "Häuser in einer ruhigen Nachbarschaft",
+      "howTitle": "So funktioniert's",
+      "step1Title": "Biete an, was du hast",
+      "step1Text": "Füge ein Foto, eine Kategorie und eine kurze Beschreibung hinzu.",
+      "step2Title": "Zeitraum anfragen",
+      "step2Text": "Nachbarn wählen Tage, die noch frei sind.",
+      "step3Title": "Verleihen und zurückbekommen",
+      "step3Text": "Du nimmst Anfragen an und markierst Werkzeuge als zurückgegeben."
+    },
+    "browse": {
+      "title": "Werkzeuge entdecken",
+      "subtitle": "Alles, was deine Nachbarn verleihen.",
+      "listTool": "Werkzeug anbieten",
+      "all": "Alle",
+      "filterLabel": "Nach Kategorie filtern",
+      "emptyTitle": "Keine Werkzeuge in dieser Kategorie",
+      "emptyDescription": "Probiere eine andere Kategorie oder biete selbst eins an.",
+      "by": "Verliehen von {name}"
+    },
+    "detail": {
+      "condition": "Zustand",
+      "owner": "Verliehen von",
+      "edit": "Angebot bearbeiten",
+      "yours": "Das ist dein Angebot",
+      "backToTools": "Alle Werkzeuge",
+      "notFoundTitle": "Dieses Werkzeug wird nicht mehr angeboten",
+      "notFoundDescription": "Vielleicht hat der Besitzer es entfernt."
+    },
+    "form": {
+      "createTitle": "Werkzeug anbieten",
+      "createSubtitle": "Nachbarn sehen das Foto, den Namen und die Kategorie.",
+      "editTitle": "Angebot bearbeiten",
+      "name": "Name",
+      "namePlaceholder": "z. B. Akku-Bohrschrauber",
+      "category": "Kategorie",
+      "condition": "Zustand",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Was dabei ist, wie man es benutzt, was man wissen sollte.",
+      "photo": "Foto",
+      "photoHint": "JPEG, PNG oder WebP, bis 5 MB.",
+      "choosePhoto": "Foto auswählen",
+      "changePhoto": "Ändern",
+      "removePhoto": "Entfernen",
+      "submitCreate": "Angebot veröffentlichen",
+      "submitEdit": "Änderungen speichern",
+      "created": "Dein Werkzeug ist online.",
+      "updated": "Angebot aktualisiert.",
+      "errors": {
+        "nameRequired": "Gib deinem Werkzeug einen Namen.",
+        "nameTooLong": "Der Name darf höchstens 80 Zeichen haben.",
+        "descriptionTooLong": "Die Beschreibung darf höchstens 500 Zeichen haben.",
+        "photoType": "Verwende ein JPEG-, PNG- oder WebP-Bild.",
+        "photoSize": "Das Foto darf höchstens 5 MB groß sein.",
+        "upload": "Das Foto konnte nicht hochgeladen werden. Bitte versuche es erneut."
+      }
+    },
+    "listings": {
+      "title": "Meine Angebote",
+      "subtitle": "Werkzeuge, die du der Nachbarschaft leihst.",
+      "emptyTitle": "Noch keine Angebote",
+      "emptyDescription": "Biete dein erstes Werkzeug an, damit Nachbarn es ausleihen können.",
+      "colTool": "Werkzeug",
+      "colCategory": "Kategorie",
+      "colStatus": "Status",
+      "colRequests": "Offene Anfragen",
+      "colActions": "Aktionen",
+      "deleteTitle": "Dieses Angebot löschen?",
+      "deleteDescription": "Offene Anfragen werden abgelehnt. Das kann nicht rückgängig gemacht werden.",
+      "deleted": "Angebot gelöscht.",
+      "deleteBlocked": "Löschen ist während einer laufenden Ausleihe nicht möglich."
+    }
+  },
+  "loans": {
+    "status": {
+      "pending": "Offen",
+      "approved": "Bestätigt",
+      "declined": "Abgelehnt",
+      "cancelled": "Storniert",
+      "returned": "Zurückgegeben",
+      "overdue": "Überfällig"
+    },
+    "toasts": {
+      "requested": "Anfrage an den Besitzer gesendet.",
+      "cancelled": "Anfrage storniert.",
+      "approved": "Anfrage bestätigt.",
+      "declined": "Anfrage abgelehnt.",
+      "returned": "Als zurückgegeben markiert."
+    },
+    "request": {
+      "title": "Dieses Werkzeug ausleihen",
+      "subtitle": "Wähle die Tage, an denen du es brauchst. Der Besitzer nimmt an oder lehnt ab.",
+      "dates": "Zeitraum",
+      "submit": "Anfrage senden",
+      "signedOutHint": "Melde dich an, um auszuleihen.",
+      "errors": {
+        "datesRequired": "Wähle ein Start- und ein Enddatum.",
+        "datesInvalid": "Wähle Daten ab heute, mit dem Ende nach dem Start."
+      }
+    },
+    "myRequests": {
+      "title": "Meine Anfragen",
+      "subtitle": "Werkzeuge, die du ausleihen möchtest.",
+      "emptyTitle": "Noch keine Anfragen",
+      "emptyDescription": "Entdecke die Werkzeuge und frag einen Nachbarn.",
+      "browse": "Werkzeuge entdecken",
+      "cancel": "Anfrage stornieren",
+      "cancelTitle": "Diese Anfrage stornieren?",
+      "cancelDescription": "Der Besitzer wird benachrichtigt.",
+      "owner": "Besitzer: {name}"
+    },
+    "incoming": {
+      "title": "Eingegangene Anfragen",
+      "subtitle": "Anfragen zu den Werkzeugen, die du verleihst.",
+      "tabPending": "Zu prüfen",
+      "tabActive": "Verliehen",
+      "tabHistory": "Verlauf",
+      "emptyPending": "Keine Anfragen zu prüfen",
+      "emptyActive": "Gerade nichts verliehen",
+      "emptyHistory": "Noch keine vergangenen Ausleihen",
+      "emptyDescription": "Neue Anfragen zu deinen Werkzeugen erscheinen hier in Echtzeit.",
+      "borrower": "Angefragt von {name}",
+      "approve": "Annehmen",
+      "decline": "Ablehnen",
+      "markReturned": "Als zurückgegeben markieren",
+      "overlapWarning": "Diese Daten überschneiden sich mit einer bereits bestätigten Ausleihe.",
+      "declineTitle": "Diese Anfrage ablehnen?",
+      "declineDescription": "Die ausleihende Person wird benachrichtigt.",
+      "returnTitle": "Als zurückgegeben markieren?",
+      "returnDescription": "Das Werkzeug ist danach wieder verfügbar."
+    },
+    "toolRemoved": "Werkzeug nicht mehr angeboten",
+    "requestedOn": "Angefragt am {date}",
+    "activity": {
+      "title": "Automatisierungen",
+      "notification_sent": "Benachrichtigung gesendet",
+      "due_tomorrow_reminder_sent": "Erinnerung am Vortag gesendet",
+      "overdue_reminder_sent": "Überfälligkeits-Erinnerung gesendet",
+      "automation_failed": "Eine Automatisierung ist fehlgeschlagen"
+    }
+  },
+  "admin": {
+    "title": "Admin",
+    "subtitle": "Ausleihen und Mitglieder im Blick behalten.",
+    "navLoans": "Alle Ausleihen",
+    "navUsers": "Mitglieder",
+    "forbiddenTitle": "Nur für Admins",
+    "forbiddenDescription": "Dieser Bereich ist Administratoren vorbehalten.",
+    "backToTools": "Zurück zu den Werkzeugen",
+    "filterLabel": "Ausleihen nach Status filtern",
+    "filterAll": "Alle",
+    "emptyLoans": "Keine Ausleihen für diesen Filter",
+    "emptyUsers": "Noch keine Mitglieder",
+    "colTool": "Werkzeug",
+    "colOwner": "Besitzer",
+    "colBorrower": "Ausleihende Person",
+    "colDates": "Zeitraum",
+    "colStatus": "Status",
+    "colMember": "Mitglied",
+    "colRole": "Rolle",
+    "colListings": "Angebote",
+    "colBadge": "Abzeichen",
+    "colActions": "Aktionen",
+    "roleAdmin": "Admin",
+    "roleUser": "Mitglied",
+    "grantBadge": "„Vertrauenswürdiger Verleiher“ vergeben",
+    "removeBadge": "Abzeichen entfernen",
+    "moderation": "Moderation",
+    "removeListing": "Dieses Angebot entfernen",
+    "removeTitle": "Dieses Angebot entfernen?",
+    "removeDescription": "Offene Anfragen werden abgelehnt. Während einer laufenden Ausleihe nicht möglich.",
+    "toasts": {
+      "toolRemoved": "Angebot entfernt.",
+      "badgeUpdated": "Abzeichen aktualisiert."
+    }
+  },
+  "pages": {
+    "notFoundTitle": "Seite nicht gefunden",
+    "notFoundDescription": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    "goHome": "Zur Startseite",
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "errorDescription": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "retry": "Erneut versuchen"
+  }
+}

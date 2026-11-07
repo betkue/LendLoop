@@ -3,7 +3,7 @@
 #   cp n8n/.env.example n8n/.env     # then fill in the secrets (same values as in Convex)
 #   docker compose -f n8n/docker-compose.yml up -d
 #
-# n8n:     http://localhost:5678   (workflows are imported on start)
+# n8n:     http://localhost:5678   (workflows and the Mailpit credential are imported and activated on first start)
 # Mailpit: http://localhost:8025   (every email sent by n8n lands here)
 # Both ports are bound to 127.0.0.1 only: nothing is exposed to the network.
 
@@ -32,9 +32,11 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./workflows:/workflows:ro
-    # Import (or update) the three LendLoop workflows, then start n8n.
-    entrypoint: ["/bin/sh", "-c", "n8n import:workflow --separate --input=/workflows && exec n8n start"]
+      - ./workflows:/lendloop/workflows:ro
+      - ./credentials:/lendloop/credentials:ro
+      - ./entrypoint.sh:/lendloop/entrypoint.sh:ro
+    # First start: import the credential and workflows and activate them (see entrypoint.sh).
+    entrypoint: ["/bin/sh", "/lendloop/entrypoint.sh"]
     depends_on:
       - mailpit
 

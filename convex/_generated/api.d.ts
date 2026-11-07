@@ -9,13 +9,17 @@
  */
 
 import type * as admin from "../admin.js";
+import type * as crons from "../crons.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_errors from "../lib/errors.js";
+import type * as lib_hmac from "../lib/hmac.js";
 import type * as loans from "../loans.js";
 import type * as model_loans from "../model/loans.js";
+import type * as model_notifications from "../model/notifications.js";
 import type * as model_outbox from "../model/outbox.js";
 import type * as model_tools from "../model/tools.js";
 import type * as model_users from "../model/users.js";
+import type * as outbox from "../outbox.js";
 import type * as shared_constants from "../shared/constants.js";
 import type * as shared_dates from "../shared/dates.js";
 import type * as shared_loanRules from "../shared/loanRules.js";
@@ -31,13 +35,17 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
+  crons: typeof crons;
   "lib/auth": typeof lib_auth;
   "lib/errors": typeof lib_errors;
+  "lib/hmac": typeof lib_hmac;
   loans: typeof loans;
   "model/loans": typeof model_loans;
+  "model/notifications": typeof model_notifications;
   "model/outbox": typeof model_outbox;
   "model/tools": typeof model_tools;
   "model/users": typeof model_users;
+  outbox: typeof outbox;
   "shared/constants": typeof shared_constants;
   "shared/dates": typeof shared_dates;
   "shared/loanRules": typeof shared_loanRules;

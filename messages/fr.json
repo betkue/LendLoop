@@ -53,7 +53,8 @@
     "heroTitle": "La boîte à outils de votre quartier, partagée.",
     "heroPoint1": "Empruntez à vos voisins au lieu d'acheter",
     "heroPoint2": "Réservez des dates qui ne se chevauchent jamais",
-    "heroPoint3": "Les propriétaires gardent la main sur chaque demande"
+    "heroPoint3": "Les propriétaires gardent la main sur chaque demande",
+    "signIn": "Se connecter"
   },
   "tools": {
     "categories": {
@@ -90,16 +91,12 @@
       "step2Title": "Demandez une période",
       "step2Text": "Les voisins choisissent des jours encore libres.",
       "step3Title": "Prêtez et récupérez",
-      "step3Text": "Vous acceptez les demandes et marquez les outils rendus."
+      "step3Text": "Vous acceptez les demandes et marquez les outils rendus.",
+      "categoriesTitle": "Parcourir par catégorie",
+      "seeCatalog": "Voir tout le catalogue"
     },
     "browse": {
-      "title": "Parcourir les outils",
-      "subtitle": "Tout ce que vos voisins prêtent.",
       "listTool": "Proposer un outil",
-      "all": "Tous",
-      "filterLabel": "Filtrer par catégorie",
-      "emptyTitle": "Aucun outil dans cette catégorie",
-      "emptyDescription": "Essayez une autre catégorie ou proposez-en un.",
       "by": "Prêté par {name}"
     },
     "detail": {
@@ -265,5 +262,37 @@
     "errorTitle": "Une erreur est survenue",
     "errorDescription": "Une erreur inattendue s'est produite. Réessayez.",
     "retry": "Réessayer"
+  },
+  "header": {
+    "search": "Rechercher un outil",
+    "searchPlaceholder": "Une perceuse, une échelle, une tondeuse…",
+    "categories": "Catégories",
+    "allTools": "Tous les outils",
+    "mySpace": "Mon espace"
+  },
+  "catalog": {
+    "allTitle": "Tous les outils",
+    "allSubtitle": "Tout ce que vos voisins prêtent.",
+    "searchTitle": "Résultats pour « {query} »",
+    "searchEmptyTitle": "Rechercher dans le catalogue",
+    "count": "{count, plural, =0 {Aucun outil} one {# outil} other {# outils}}",
+    "listTool": "Proposer un outil",
+    "availableOnly": "Disponible aujourd'hui",
+    "sortBy": "Trier par",
+    "sortNewest": "Plus récents",
+    "sortAvailable": "Disponibles d'abord",
+    "sortName": "Nom A–Z",
+    "noResults": "Aucun outil ne correspond à votre recherche",
+    "emptyTitle": "Aucun outil pour l'instant",
+    "emptyDescription": "Essayez une autre catégorie ou un autre mot.",
+    "seeAll": "Voir tous les outils",
+    "categoryIntro": {
+      "diy": "Perceuses, scies, ponceuses et tout pour vos travaux.",
+      "garden": "Tondeuses, taille-haies et outils pour le jardin.",
+      "kitchen": "Robots et appareils pour les grandes occasions.",
+      "cleaning": "Nettoyeurs haute pression, aspirateurs et matériel de grand ménage.",
+      "sports": "Tentes, vélos et matériel de plein air.",
+      "other": "Tout le reste de ce que partagent vos voisins."
+    }
   }
 }

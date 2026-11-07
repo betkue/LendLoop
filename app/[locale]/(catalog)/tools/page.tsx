@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 import { LoadingSkeleton } from "@/components/shared/states";
-import { ToolsBrowser } from "@/features/tools";
+import { CatalogView } from "@/features/tools";
 
 export default function ToolsPage() {
-  // ToolsBrowser reads ?category= from the URL, which needs a Suspense boundary.
   return (
-    <Suspense fallback={<LoadingSkeleton />}>
-      <ToolsBrowser />
+    <Suspense fallback={<LoadingSkeleton count={8} />}>
+      <CatalogView mode={{ kind: "all" }} />
     </Suspense>
   );
 }

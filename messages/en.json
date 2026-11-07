@@ -53,7 +53,8 @@
     "heroTitle": "Your neighborhood's toolbox, shared.",
     "heroPoint1": "Borrow from neighbors instead of buying",
     "heroPoint2": "Book dates that never overlap",
-    "heroPoint3": "Owners stay in control of every request"
+    "heroPoint3": "Owners stay in control of every request",
+    "signIn": "Sign in"
   },
   "tools": {
     "categories": {
@@ -90,16 +91,12 @@
       "step2Title": "Request a date range",
       "step2Text": "Neighbors pick days that are still free.",
       "step3Title": "Lend and get it back",
-      "step3Text": "You approve requests and mark tools as returned."
+      "step3Text": "You approve requests and mark tools as returned.",
+      "categoriesTitle": "Shop by category",
+      "seeCatalog": "See the whole catalog"
     },
     "browse": {
-      "title": "Browse tools",
-      "subtitle": "Everything your neighbors are lending.",
       "listTool": "List a tool",
-      "all": "All",
-      "filterLabel": "Filter by category",
-      "emptyTitle": "No tools in this category",
-      "emptyDescription": "Try another category or list one yourself.",
       "by": "Lent by {name}"
     },
     "detail": {
@@ -265,5 +262,37 @@
     "errorTitle": "Something went wrong",
     "errorDescription": "An unexpected error occurred. Please try again.",
     "retry": "Try again"
+  },
+  "header": {
+    "search": "Search tools",
+    "searchPlaceholder": "Search a drill, a ladder, a mower…",
+    "categories": "Categories",
+    "allTools": "All tools",
+    "mySpace": "My space"
+  },
+  "catalog": {
+    "allTitle": "All tools",
+    "allSubtitle": "Everything your neighbors are lending.",
+    "searchTitle": "Results for “{query}”",
+    "searchEmptyTitle": "Search the catalog",
+    "count": "{count, plural, =0 {No tools} one {# tool} other {# tools}}",
+    "listTool": "List a tool",
+    "availableOnly": "Available today",
+    "sortBy": "Sort by",
+    "sortNewest": "Newest",
+    "sortAvailable": "Available first",
+    "sortName": "Name A–Z",
+    "noResults": "No tools match your search",
+    "emptyTitle": "No tools here yet",
+    "emptyDescription": "Try another category or search term.",
+    "seeAll": "See all tools",
+    "categoryIntro": {
+      "diy": "Drills, saws, sanders and everything for home projects.",
+      "garden": "Mowers, trimmers and tools for the garden.",
+      "kitchen": "Mixers and appliances for the occasional feast.",
+      "cleaning": "Pressure washers, vacuums and deep-clean gear.",
+      "sports": "Tents, bikes and gear for the outdoors.",
+      "other": "Everything else your neighbors share."
+    }
   }
 }

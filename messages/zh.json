@@ -53,7 +53,8 @@
     "heroTitle": "社区共享的工具箱。",
     "heroPoint1": "向邻居借用，而不是购买",
     "heroPoint2": "预订的日期永不冲突",
-    "heroPoint3": "每个申请都由物主做主"
+    "heroPoint3": "每个申请都由物主做主",
+    "signIn": "登录"
   },
   "tools": {
     "categories": {
@@ -90,16 +91,12 @@
       "step2Title": "申请借用时段",
       "step2Text": "邻居选择仍然空闲的日期。",
       "step3Title": "出借并收回",
-      "step3Text": "由您批准申请，并标记工具已归还。"
+      "step3Text": "由您批准申请，并标记工具已归还。",
+      "categoriesTitle": "按类别浏览",
+      "seeCatalog": "查看全部目录"
     },
     "browse": {
-      "title": "浏览工具",
-      "subtitle": "邻居们正在出借的所有工具。",
       "listTool": "发布工具",
-      "all": "全部",
-      "filterLabel": "按类别筛选",
-      "emptyTitle": "该类别暂无工具",
-      "emptyDescription": "试试其他类别，或者自己发布一件。",
       "by": "出借人：{name}"
     },
     "detail": {
@@ -265,5 +262,37 @@
     "errorTitle": "出现问题",
     "errorDescription": "发生了意外错误，请重试。",
     "retry": "重试"
+  },
+  "header": {
+    "search": "搜索工具",
+    "searchPlaceholder": "搜索电钻、梯子、割草机…",
+    "categories": "类别",
+    "allTools": "全部工具",
+    "mySpace": "我的空间"
+  },
+  "catalog": {
+    "allTitle": "全部工具",
+    "allSubtitle": "邻居们正在出借的所有工具。",
+    "searchTitle": "“{query}”的搜索结果",
+    "searchEmptyTitle": "搜索目录",
+    "count": "{count, plural, =0 {暂无工具} other {# 件工具}}",
+    "listTool": "发布工具",
+    "availableOnly": "今天可借",
+    "sortBy": "排序",
+    "sortNewest": "最新",
+    "sortAvailable": "可借优先",
+    "sortName": "名称 A–Z",
+    "noResults": "没有符合搜索条件的工具",
+    "emptyTitle": "暂无工具",
+    "emptyDescription": "试试其他类别或关键词。",
+    "seeAll": "查看全部工具",
+    "categoryIntro": {
+      "diy": "电钻、电锯、砂光机等家装工具。",
+      "garden": "割草机、修枝机等园艺工具。",
+      "kitchen": "厨师机和偶尔大展身手所需的厨房电器。",
+      "cleaning": "高压清洗机、吸尘器等大扫除装备。",
+      "sports": "帐篷、自行车等户外装备。",
+      "other": "邻居们分享的其他物品。"
+    }
   }
 }

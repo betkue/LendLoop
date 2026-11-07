@@ -11,7 +11,8 @@ const handleI18n = createIntlMiddleware(routing);
 // Signed-in areas. This redirect is a convenience: Convex functions still
 // re-check the user on every call.
 const isProtectedRoute = createRouteMatcher([
-  "/:locale/tools(.*)",
+  // /tools (catalog) is public; new, detail and edit pages need an account.
+  "/:locale/tools/(.*)",
   "/:locale/my-listings(.*)",
   "/:locale/my-requests(.*)",
   "/:locale/incoming(.*)",

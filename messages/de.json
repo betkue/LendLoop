@@ -53,7 +53,8 @@
     "heroTitle": "Der Werkzeugkasten deiner Nachbarschaft, geteilt.",
     "heroPoint1": "Von Nachbarn leihen statt kaufen",
     "heroPoint2": "Zeiträume buchen, die sich nie überschneiden",
-    "heroPoint3": "Besitzer entscheiden über jede Anfrage"
+    "heroPoint3": "Besitzer entscheiden über jede Anfrage",
+    "signIn": "Anmelden"
   },
   "tools": {
     "categories": {
@@ -90,16 +91,12 @@
       "step2Title": "Zeitraum anfragen",
       "step2Text": "Nachbarn wählen Tage, die noch frei sind.",
       "step3Title": "Verleihen und zurückbekommen",
-      "step3Text": "Du nimmst Anfragen an und markierst Werkzeuge als zurückgegeben."
+      "step3Text": "Du nimmst Anfragen an und markierst Werkzeuge als zurückgegeben.",
+      "categoriesTitle": "Nach Kategorie stöbern",
+      "seeCatalog": "Ganzen Katalog ansehen"
     },
     "browse": {
-      "title": "Werkzeuge entdecken",
-      "subtitle": "Alles, was deine Nachbarn verleihen.",
       "listTool": "Werkzeug anbieten",
-      "all": "Alle",
-      "filterLabel": "Nach Kategorie filtern",
-      "emptyTitle": "Keine Werkzeuge in dieser Kategorie",
-      "emptyDescription": "Probiere eine andere Kategorie oder biete selbst eins an.",
       "by": "Verliehen von {name}"
     },
     "detail": {
@@ -265,5 +262,37 @@
     "errorTitle": "Etwas ist schiefgelaufen",
     "errorDescription": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
     "retry": "Erneut versuchen"
+  },
+  "header": {
+    "search": "Werkzeuge suchen",
+    "searchPlaceholder": "Bohrmaschine, Leiter, Rasenmäher…",
+    "categories": "Kategorien",
+    "allTools": "Alle Werkzeuge",
+    "mySpace": "Mein Bereich"
+  },
+  "catalog": {
+    "allTitle": "Alle Werkzeuge",
+    "allSubtitle": "Alles, was deine Nachbarn verleihen.",
+    "searchTitle": "Ergebnisse für „{query}“",
+    "searchEmptyTitle": "Katalog durchsuchen",
+    "count": "{count, plural, =0 {Keine Werkzeuge} one {# Werkzeug} other {# Werkzeuge}}",
+    "listTool": "Werkzeug anbieten",
+    "availableOnly": "Heute verfügbar",
+    "sortBy": "Sortieren nach",
+    "sortNewest": "Neueste",
+    "sortAvailable": "Verfügbare zuerst",
+    "sortName": "Name A–Z",
+    "noResults": "Keine Werkzeuge passen zu deiner Suche",
+    "emptyTitle": "Hier gibt es noch keine Werkzeuge",
+    "emptyDescription": "Probiere eine andere Kategorie oder einen anderen Suchbegriff.",
+    "seeAll": "Alle Werkzeuge ansehen",
+    "categoryIntro": {
+      "diy": "Bohrmaschinen, Sägen, Schleifer und alles für Heimwerkerprojekte.",
+      "garden": "Rasenmäher, Heckenscheren und Werkzeug für den Garten.",
+      "kitchen": "Küchenmaschinen und Geräte für besondere Anlässe.",
+      "cleaning": "Hochdruckreiniger, Sauger und Ausrüstung für den Großputz.",
+      "sports": "Zelte, Fahrräder und Outdoor-Ausrüstung.",
+      "other": "Alles andere, was deine Nachbarn teilen."
+    }
   }
 }

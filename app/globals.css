@@ -128,3 +128,9 @@
     @apply font-sans;
   }
 }
+
+/* Chinese pages: Geist has no CJK glyphs, so fall back to the platform's
+   Chinese UI fonts (no extra download). */
+html[lang="zh"] body {
+  font-family: var(--font-sans), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}

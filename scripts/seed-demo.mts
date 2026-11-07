@@ -3,6 +3,7 @@
  *
  *   node scripts/seed-demo.mts                       # demo neighbors only
  *   node scripts/seed-demo.mts --me you@example.com  # also give your own account listings and history
+ *   node scripts/seed-demo.mts --prod                # seed the project's production deployment instead
  *
  * 1. Creates (or reuses) the demo neighbors in your Clerk DEVELOPMENT instance,
  *    using CLERK_SECRET_KEY from .env.local. Test accounts only: the emails use
@@ -107,6 +108,8 @@ if (meEmail) {
 const convexCli = join(root, "node_modules", "convex", "bin", "main.js");
 const run = (args: string[]) =>
   execFileSync(process.execPath, [convexCli, ...args], { cwd: root, encoding: "utf8" }).trim();
-console.log(run(["run", "seed:reset"]));
-console.log(run(["run", "seed:run", JSON.stringify({ accounts })]));
+// --prod targets the project's production deployment (same Clerk development instance).
+const target = process.argv.includes("--prod") ? ["--prod"] : [];
+console.log(run(["run", ...target, "seed:reset"]));
+console.log(run(["run", ...target, "seed:run", JSON.stringify({ accounts })]));
 console.log(`\nSign in with any demo email above and the password: ${DEMO_PASSWORD}`);

@@ -135,8 +135,10 @@ export const activity = query({
     const events = await ctx.db
       .query("automationEvents")
       .withIndex("by_loan", (q) => q.eq("loanId", loanId))
-      .order("desc")
-      .take(10);
-    return events.map((event) => ({ _id: event._id, type: event.type, at: event._creationTime }));
+      .collect();
+    return events
+      .map((event) => ({ _id: event._id, type: event.type, at: event.occurredAt ?? event._creationTime }))
+      .sort((a, b) => b.at - a.at)
+      .slice(0, 10);
   },
 });

@@ -76,6 +76,8 @@ export default defineSchema({
     type: vAutomationEventType,
     channel: v.optional(vChannel),
     detail: v.optional(v.string()),
+    // When it happened, if different from the row creation (imported or demo history).
+    occurredAt: v.optional(v.number()),
   })
     .index("by_eventId", ["eventId"])
     .index("by_loan", ["loanId"]),

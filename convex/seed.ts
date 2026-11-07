@@ -27,7 +27,9 @@ export const PEOPLE = [
   { key: "awa", name: "Awa Diallo", email: "awa+clerk_test@lendloop.dev", locale: "fr", trusted: true, admin: false },
   { key: "marc", name: "Marc Lefèvre", email: "marc+clerk_test@lendloop.dev", locale: "fr", trusted: false, admin: false },
   { key: "lea", name: "Léa Martin", email: "lea+clerk_test@lendloop.dev", locale: "en", trusted: false, admin: false },
-  { key: "sophie", name: "Sophie Wagner", email: "sophie+clerk_test@lendloop.dev", locale: "de", trusted: true, admin: true },
+  { key: "sophie", name: "Sophie Wagner", email: "sophie+clerk_test@lendloop.dev", locale: "de", trusted: true, admin: false },
+  // Moderation account for reviewers: no listings or loans, admin area only.
+  { key: "admin", name: "LendLoop Admin", email: "admin+clerk_test@lendloop.dev", locale: "en", trusted: false, admin: true },
 ] as const;
 
 type PersonKey = (typeof PEOPLE)[number]["key"] | "me";

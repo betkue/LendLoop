@@ -24,6 +24,7 @@ const PEOPLE = [
   { key: "marc", first: "Marc", last: "Lefèvre", email: "marc+clerk_test@lendloop.dev" },
   { key: "lea", first: "Léa", last: "Martin", email: "lea+clerk_test@lendloop.dev" },
   { key: "sophie", first: "Sophie", last: "Wagner", email: "sophie+clerk_test@lendloop.dev" },
+  { key: "admin", first: "LendLoop", last: "Admin", email: "admin+clerk_test@lendloop.dev" },
 ];
 
 const root = join(import.meta.dirname, "..");

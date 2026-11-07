@@ -85,7 +85,7 @@ Key decisions:
 
 ## Local setup
 
-Prerequisites: Node.js 22+ (24 used here), npm, Docker Desktop (for n8n), a free [Clerk](https://clerk.com) account.
+Prerequisites: Node.js 22.18+ (24 used here; the scripts are TypeScript run directly by Node), npm, Docker Desktop (for n8n), free [Clerk](https://clerk.com) and [Convex](https://convex.dev) accounts.
 
 ```bash
 git clone <this repository> && cd LendLoop
@@ -100,8 +100,15 @@ npm install
 
 **2. Convex** (local deployment, so Convex can reach n8n on your machine)
 
+In a first terminal, start Convex and keep it running. It asks you to log in, then writes `CONVEX_*` and `NEXT_PUBLIC_CONVEX_*` to `.env.local`. The first push stops on the missing `CLERK_JWT_ISSUER_DOMAIN`: that is expected.
+
 ```bash
-npx convex dev --configure new --dev-deployment local   # writes CONVEX_* and NEXT_PUBLIC_CONVEX_* to .env.local
+npx convex dev --configure new --dev-deployment local
+```
+
+In a second terminal, set the deployment variables. `npx convex dev` picks them up and finishes the push (if it does not, stop it and start it again).
+
+```bash
 npx convex env set CLERK_JWT_ISSUER_DOMAIN https://<your-app>.clerk.accounts.dev
 npx convex env set ADMIN_EMAILS you@example.com
 npx convex env set N8N_NOTIFY_WEBHOOK_URL http://localhost:5678/webhook/lendloop-events
@@ -109,7 +116,7 @@ npx convex env set HMAC_SECRET_CONVEX_TO_N8N <secret-1>
 npx convex env set HMAC_SECRET_N8N_TO_CONVEX <secret-2>
 ```
 
-Generate each secret with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Keep `npx convex dev` running.
+Generate each secret with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. `ADMIN_EMAILS` is optional if you only use the demo admin account (see [Demo accounts](#demo-accounts)).
 
 **3. n8n and Mailpit**
 

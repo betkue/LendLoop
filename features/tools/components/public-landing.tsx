@@ -76,7 +76,7 @@ export function PublicLanding({ preloadedTools }: { preloadedTools: Preloaded<ty
             </span>
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t("title")}</h1>
             <p className="text-lg text-muted-foreground">{t("subtitle")}</p>
-            <AuthCta className="h-12 gap-2 px-6 text-base" />
+            <AuthCta className="h-12 w-full gap-2 px-6 text-base sm:w-auto" />
           </Reveal>
         </div>
       </section>

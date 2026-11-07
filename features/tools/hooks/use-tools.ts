@@ -2,6 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useMemberQuery } from "@/hooks/use-member-query";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { Category } from "@/convex/shared/constants";
 
@@ -20,10 +21,10 @@ export function useCategoryCounts() {
 
 /** Live data of one tool; null when it no longer exists, undefined while loading. */
 export function useTool(toolId: Id<"tools">) {
-  return useQuery(api.tools.get, { toolId });
+  return useMemberQuery(api.tools.get, { toolId });
 }
 
 /** The signed-in user's own listings; undefined while loading. */
 export function useMyListings() {
-  return useQuery(api.tools.myListings);
+  return useMemberQuery(api.tools.myListings);
 }

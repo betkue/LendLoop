@@ -4,6 +4,7 @@ import { useConvexAuth, useQuery } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "@/convex/_generated/api";
 import type { LoanStatus } from "@/convex/shared/constants";
+import { useMemberQuery } from "@/hooks/use-member-query";
 import { useSafeMutation } from "@/hooks/use-safe-mutation";
 
 /** undefined while loading, then whether the signed-in user is an admin (UI hint only). */
@@ -15,11 +16,11 @@ export function useIsAdmin(): boolean | undefined {
 }
 
 export function useAllLoans(status: LoanStatus | null) {
-  return useQuery(api.admin.allLoans, status ? { status } : {});
+  return useMemberQuery(api.admin.allLoans, status ? { status } : {});
 }
 
 export function useAdminUsers() {
-  return useQuery(api.admin.users);
+  return useMemberQuery(api.admin.users);
 }
 
 export function useAdminActions() {

@@ -23,4 +23,4 @@ needed). Thanks to the photographers; each photo page shows its author.
 | Camping tent | https://unsplash.com/photos/y8Ngwq34_Ak |
 | City bike | https://unsplash.com/photos/o2FCfhNSjPo |
 | Sign-in page (workshop pegboard) | https://unsplash.com/photos/t5YUoHW6zRo |
-| Landing page (neighborhood) | https://unsplash.com/photos/Ia4vLxgS1LQ |
+| Landing page (power tools on a wooden wall) | https://unsplash.com/photos/c3wqDVRmtj4 |

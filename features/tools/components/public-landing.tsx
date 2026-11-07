@@ -18,7 +18,7 @@ import { ToolImage } from "./tool-image";
 
 // Royalty-free photo (Unsplash License), credited in public/seed/CREDITS.md.
 const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1663540275466-f171aa6d9f3e?auto=format&fit=crop&w=1600&q=80";
+  "https://images.unsplash.com/photo-1683115099413-5b7d85c2950c?auto=format&fit=crop&w=1400&q=80";
 
 function AuthCta({ className }: { className?: string }) {
   const t = useTranslations("tools.landing");
@@ -65,18 +65,28 @@ export function PublicLanding({ preloadedTools }: { preloadedTools: Preloaded<ty
     <div className="flex min-h-dvh flex-col">
       <Header showNav={false} actions={<AuthCta className="hidden h-9 gap-2 sm:inline-flex" />} />
 
-      <section className="relative overflow-hidden border-b">
-        <Image src={HERO_IMAGE} alt={t("heroAlt")} fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-background/85" aria-hidden="true" />
-        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <Reveal className="max-w-2xl space-y-6">
+      <section className="border-b">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:py-20 [&>*]:min-w-0">
+          <Reveal className="space-y-6">
             <span className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-sm text-muted-foreground">
               <WrenchIcon className="size-4 text-primary" aria-hidden="true" />
               LendLoop
             </span>
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t("title")}</h1>
-            <p className="text-lg text-muted-foreground">{t("subtitle")}</p>
-            <AuthCta className="h-12 w-full gap-2 px-6 text-base sm:w-auto" />
+            <p className="max-w-xl text-lg text-muted-foreground">{t("subtitle")}</p>
+            <AuthCta className="h-auto min-h-12 w-full gap-2 px-6 py-3 text-base whitespace-normal sm:w-auto" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border shadow-sm">
+              <Image
+                src={HERO_IMAGE}
+                alt={t("heroAlt")}
+                fill
+                priority
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </Reveal>
         </div>
       </section>

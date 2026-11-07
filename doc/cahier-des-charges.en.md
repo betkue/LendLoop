@@ -43,6 +43,7 @@ A single document: a general part, then one part per repository folder.
    - [7.1 Deliverables](#71-deliverables)
    - [7.2 Production roadmap](#72-production-roadmap)
    - [7.3 Evaluation criteria](#73-evaluation-criteria)
+   - [7.4 Live deployment](#74-live-deployment)
 8. [Development plan](#8-development-plan)
    - [8.1 Method](#81-method)
    - [8.2 Modules](#82-modules)
@@ -89,6 +90,10 @@ What the project adds to the brief; each addition is justified in the README.
 - **Listing deletion blocked** while an approved loan has not been returned.
 - **Polished UI**: explicit empty states, mobile- and tablet-friendly layout, animations with Motion.
 - **Tool photos**: each listing can have a photo; the demo is pre-filled with royalty-free data and images.
+- **Store-style catalog, open to visitors**: search by name in the header, a bar of categories, one page per category, a search results page, an "available today" filter and sorting.
+- **Demo accounts with a history**: `npm run seed` creates sign-in-able Clerk test accounts (four neighbors and an admin) and loans in every status, with their notification and reminder history.
+- **Zero-click n8n setup**: the SMTP credential and the workflows are imported and activated on first start.
+- **Live demo** at https://lendloop.smilylab.fr (see 7.4).
 
 ### 1.4 How the platform works
 
@@ -314,7 +319,9 @@ Every route is prefixed with the language (`/en`, `/fr`, `/zh`, `/de`); paths be
 | --- | --- | --- | --- |
 | `/` | Public | PublicLanding | Server (`preloadQuery`), name and category only |
 | `/sign-in`, `/sign-up` | Public | SignIn, SignUp (Clerk) | Client |
-| `/tools` | Signed in | ToolsBrowser | Client, real time, `?category=` filter |
+| `/tools` | Public | CatalogView | Client, real time; members also see the owner and badges |
+| `/categories/[category]` | Public | CatalogView (one category) | Client, real time |
+| `/search?q=` | Public | CatalogView (search results) | Client, Convex search index on the name |
 | `/tools/new` | Signed in | ToolForm | Client |
 | `/tools/[id]` | Signed in | ToolDetail + RequestForm | Client |
 | `/tools/[id]/edit` | Owner | ToolForm | Client |
@@ -332,7 +339,7 @@ Each screen shows the rules before Convex enforces them: users understand why an
 | --- | --- | --- |
 | Public page | See available tools, change language, sign in | Name, category and photo only |
 | Sign-in, sign-up | Sign in or create an account | Two panels: Clerk form and image; image hidden on mobile |
-| All tools | Browse, filter by category | Available / Unavailable badge; Trusted Lender badge |
+| Catalog (all, one category, search) | Search, browse by category, keep only tools available today, sort | Available / Unavailable badge; Trusted Lender badge for members; visitors see name, category, condition, photo and availability, and opening a tool asks them to sign in |
 | Tool detail | Read the listing, request a loan | Calendar greys out approved periods; form hidden on your own tool; invalid dates blocked |
 | Create / edit | Enter name, category, condition, description | Translated categories, conditions and errors |
 | My listings | Edit, delete | Delete disabled with an explanation while an approved loan is not returned; confirmation warns that pending requests will be declined |
@@ -667,14 +674,19 @@ Every message carries a signed timestamp (rejected after 5 minutes) and a unique
 
 ## 5. Automations — `n8n/`
 
-n8n runs in Docker alongside Mailpit, a fake email server: sent emails land in an inbox visible at `http://localhost:8025`. The folder holds the configuration and exported workflows, no Node code.
+n8n runs in Docker alongside Mailpit, a fake email server: sent emails land in an inbox visible at `http://localhost:8025`. The folder holds the configuration and the exported workflows. The Code node logic lives in `code/*.js`, unit-tested, and `build-workflows.mjs` assembles it into `workflows/*.json`.
 
 ### 5.1 Tree
 
 ```
 n8n/
 ├─ docker-compose.yml      n8n + Mailpit
+├─ entrypoint.sh           first start: import the credential and workflows, activate them
 ├─ .env.example            HMAC secrets, Convex URL, time zone, encryption key
+├─ credentials/
+│  └─ mailpit.json         SMTP connection to Mailpit (no secret)
+├─ code/                   Code node sources (unit-tested)
+├─ build-workflows.mjs     assembles code/ into workflows/
 └─ workflows/
    ├─ notification.json    workflow 1
    ├─ due-reminders.json   workflow 2 (overdue + day before)
@@ -723,9 +735,10 @@ Every day at 8 am → signed GET /n8n/due-reminders (overdue + due tomorrow)
 
 - The Webhook node uses the "Raw Body" option: the signature is computed on the exact body received.
 - Constant-time verification uses Node's `crypto` module, allowed by `NODE_FUNCTION_ALLOW_BUILTIN=crypto`.
-- The "Remove Duplicates" node drops an eventId already processed in a previous execution.
+- Events already handled are remembered in the workflow's static data (`handledEventIds`) and skipped, across executions.
+- On first start, `entrypoint.sh` imports the Mailpit credential and the workflows, then activates workflows 1 and 2. Later starts do not import again, because importing deactivates workflows.
 - Messages are written in 4 languages in a Code node, based on the recipient's language.
-- The n8n port is only exposed on `127.0.0.1`.
+- The n8n port is only exposed on `127.0.0.1`. On the live server, Caddy exposes only the webhook path, never the editor.
 
 ---
 
@@ -745,9 +758,10 @@ Both versions are kept in sync; every decision made during development is record
 ### 7.1 Deliverables
 
 - [ ] **GitHub repository** with the full application source.
-- [ ] **Exported n8n workflows** as JSON, in `n8n/workflows/`.
-- [ ] **README** in English: local setup (with the n8n docker-compose), environment variables, architecture, security and data-minimization decisions.
-- [ ] **Note** on what would change for production.
+- [x] **Exported n8n workflows** as JSON, in `n8n/workflows/`.
+- [x] **README** in English: local setup (with the n8n docker-compose), environment variables, architecture, security and data-minimization decisions.
+- [x] **Note** on what would change for production (README, "What I would change for production").
+- [x] **Live demo** at https://lendloop.smilylab.fr, with demo accounts and a demo inbox (see 7.4).
 
 ### 7.2 Production roadmap
 
@@ -767,6 +781,20 @@ Both versions are kept in sync; every decision made during development is record
 3. UX and practicality.
 4. n8n integration: design, reliability, error handling.
 5. Documentation and reasoning.
+
+### 7.4 Live deployment
+
+https://lendloop.smilylab.fr runs the same code on an Ubuntu server, behind Cloudflare.
+
+| Part | How it runs |
+| --- | --- |
+| Next.js | `next build`, then `next start` under PM2, behind Caddy (HTTPS, security headers); listens on `localhost` |
+| Convex | Convex Cloud production deployment, with its own HMAC secrets; demo data loaded with `npm run seed -- --prod` |
+| n8n + Mailpit | Same `n8n/docker-compose.yml` with a server-only override (public webhook URL, Mailpit under `/mail/`); both listen on `127.0.0.1` |
+| Public surface | Only the signed webhook `/webhook/lendloop-events` and the password-protected inbox `/mail/`; the n8n editor is private |
+| Clerk | Development instance, so the `+clerk_test` demo accounts work |
+
+Verified end to end: request and approval emails delivered in the recipient's language, signed write-back recorded in the loan history, unsigned calls rejected with 401 in both directions, events queued during an n8n outage delivered afterwards.
 
 ---
 

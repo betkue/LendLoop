@@ -43,6 +43,7 @@ Un seul document : une partie générale, puis une partie par dossier du dépôt
    - [7.1 Livrables](#71-livrables)
    - [7.2 Pistes pour la production](#72-pistes-pour-la-production)
    - [7.3 Critères d'évaluation](#73-critères-dévaluation)
+   - [7.4 Déploiement en ligne](#74-déploiement-en-ligne)
 8. [Plan de développement](#8-plan-de-développement)
    - [8.1 Méthode](#81-méthode)
    - [8.2 Modules](#82-modules)
@@ -89,6 +90,10 @@ Ce que le projet ajoute au sujet ; chaque ajout est justifié dans le README.
 - **Suppression d'annonce bloquée** tant qu'un prêt accepté n'est pas rendu.
 - **Interface soignée** : pages vides explicites, affichage adapté au mobile et à la tablette, animations avec Motion.
 - **Photos des outils** : chaque annonce peut avoir une photo ; la démo est pré-remplie avec des données et des images libres de droits.
+- **Catalogue façon boutique, ouvert aux visiteurs** : recherche par nom dans l'en-tête, barre de catégories, une page par catégorie, une page de résultats, filtre « disponible aujourd'hui » et tri.
+- **Comptes de démo avec historique** : `npm run seed` crée des comptes de test Clerk utilisables (quatre voisins et un admin) et des prêts dans tous les états, avec leur historique de notifications et de rappels.
+- **n8n sans aucun clic** : l'identifiant SMTP et les workflows sont importés et activés au premier démarrage.
+- **Démo en ligne** sur https://lendloop.smilylab.fr (voir 7.4).
 
 ### 1.4 Fonctionnement de la plateforme
 
@@ -314,7 +319,9 @@ Toutes les routes sont préfixées par la langue (`/en`, `/fr`, `/zh`, `/de`) ; 
 | --- | --- | --- | --- |
 | `/` | Public | PublicLanding | Serveur (`preloadQuery`), nom et catégorie seulement |
 | `/sign-in`, `/sign-up` | Public | SignIn, SignUp (Clerk) | Client |
-| `/tools` | Connecté | ToolsBrowser | Client, temps réel, filtre `?category=` |
+| `/tools` | Public | CatalogView | Client, temps réel ; les membres voient aussi le propriétaire et les badges |
+| `/categories/[category]` | Public | CatalogView (une catégorie) | Client, temps réel |
+| `/search?q=` | Public | CatalogView (résultats de recherche) | Client, index de recherche Convex sur le nom |
 | `/tools/new` | Connecté | ToolForm | Client |
 | `/tools/[id]` | Connecté | ToolDetail + RequestForm | Client |
 | `/tools/[id]/edit` | Propriétaire | ToolForm | Client |
@@ -332,7 +339,7 @@ Chaque écran affiche les règles avant que Convex ne les impose : l'utilisateur
 | --- | --- | --- |
 | Page publique | Voir les outils disponibles, changer de langue, se connecter | Nom, catégorie et photo seulement |
 | Connexion, inscription | Se connecter ou créer un compte | Deux volets : formulaire Clerk et image ; image masquée sur mobile |
-| Tous les outils | Parcourir, filtrer par catégorie | Badge Disponible / Indisponible ; badge Trusted Lender |
+| Catalogue (tout, une catégorie, recherche) | Chercher, parcourir par catégorie, garder les outils disponibles aujourd'hui, trier | Badge Disponible / Indisponible ; badge Trusted Lender pour les membres ; les visiteurs voient nom, catégorie, état, photo et disponibilité, et ouvrir un outil leur demande de se connecter |
 | Fiche outil | Lire la fiche, demander un emprunt | Calendrier qui grise les périodes déjà acceptées ; formulaire masqué sur son propre outil ; dates invalides bloquées |
 | Proposer / modifier | Saisir nom, catégorie, état, description | Catégories, états et erreurs traduits |
 | Mes annonces | Modifier, supprimer | Suppression désactivée avec explication si un prêt accepté n'est pas rendu ; la confirmation prévient que les demandes en attente seront refusées |
@@ -667,14 +674,19 @@ Chaque message porte un horodatage signé (refus au-delà de 5 minutes) et un ev
 
 ## 5. Automatisations — `n8n/`
 
-n8n tourne dans Docker avec Mailpit, un faux serveur email : les emails envoyés arrivent dans une boîte visible sur `http://localhost:8025`. Le dossier contient la configuration et les workflows exportés, pas de code Node.
+n8n tourne dans Docker avec Mailpit, un faux serveur email : les emails envoyés arrivent dans une boîte visible sur `http://localhost:8025`. Le dossier contient la configuration et les workflows exportés. La logique des nœuds Code est dans `code/*.js`, testée, et `build-workflows.mjs` l'assemble dans `workflows/*.json`.
 
 ### 5.1 Arborescence
 
 ```
 n8n/
 ├─ docker-compose.yml      n8n + Mailpit
+├─ entrypoint.sh           premier démarrage : import de l'identifiant et des workflows, activation
 ├─ .env.example            secrets HMAC, URL Convex, fuseau horaire, clé de chiffrement
+├─ credentials/
+│  └─ mailpit.json         connexion SMTP à Mailpit (sans secret)
+├─ code/                   sources des nœuds Code (testées)
+├─ build-workflows.mjs     assemble code/ dans workflows/
 └─ workflows/
    ├─ notification.json    workflow 1
    ├─ due-reminders.json   workflow 2 (retard + veille)
@@ -723,9 +735,10 @@ Tous les jours à 8 h → GET signé /n8n/due-reminders (retards + échéances d
 
 - Le nœud Webhook utilise l'option « Raw Body » : la signature est calculée sur le corps exact reçu.
 - La vérification à temps constant utilise le module `crypto` de Node, autorisé par `NODE_FUNCTION_ALLOW_BUILTIN=crypto`.
-- Le nœud « Remove Duplicates » écarte un eventId déjà traité dans une exécution précédente.
+- Les événements déjà traités sont mémorisés dans les données statiques du workflow (`handledEventIds`) et ignorés, d'une exécution à l'autre.
+- Au premier démarrage, `entrypoint.sh` importe l'identifiant Mailpit et les workflows, puis active les workflows 1 et 2. Les démarrages suivants ne réimportent rien, car un import désactive les workflows.
 - Les messages sont rédigés en 4 langues dans un nœud Code, selon la langue du destinataire.
-- Le port de n8n n'est exposé que sur `127.0.0.1`.
+- Le port de n8n n'est exposé que sur `127.0.0.1`. Sur le serveur en ligne, Caddy n'expose que le chemin du webhook, jamais l'éditeur.
 
 ---
 
@@ -745,9 +758,10 @@ Les deux versions sont tenues à jour ensemble ; toute décision prise pendant l
 ### 7.1 Livrables
 
 - [ ] **Dépôt GitHub** avec tout le code de l'application.
-- [ ] **Workflows n8n exportés** en JSON, dans `n8n/workflows/`.
-- [ ] **README** en anglais : installation locale (avec le docker-compose de n8n), variables d'environnement, architecture, choix de sécurité et de minimisation des données.
-- [ ] **Note** sur ce qu'il faudrait changer pour passer en production.
+- [x] **Workflows n8n exportés** en JSON, dans `n8n/workflows/`.
+- [x] **README** en anglais : installation locale (avec le docker-compose de n8n), variables d'environnement, architecture, choix de sécurité et de minimisation des données.
+- [x] **Note** sur ce qu'il faudrait changer pour passer en production (README, « What I would change for production »).
+- [x] **Démo en ligne** sur https://lendloop.smilylab.fr, avec comptes de démo et boîte de réception de démo (voir 7.4).
 
 ### 7.2 Pistes pour la production
 
@@ -767,6 +781,20 @@ Les deux versions sont tenues à jour ensemble ; toute décision prise pendant l
 3. Expérience utilisateur et côté pratique.
 4. Intégration n8n : conception, fiabilité, gestion des erreurs.
 5. Documentation et justification des choix.
+
+### 7.4 Déploiement en ligne
+
+https://lendloop.smilylab.fr fait tourner le même code sur un serveur Ubuntu, derrière Cloudflare.
+
+| Partie | Fonctionnement |
+| --- | --- |
+| Next.js | `next build`, puis `next start` sous PM2, derrière Caddy (HTTPS, en-têtes de sécurité) ; écoute sur `localhost` |
+| Convex | Déploiement de production sur Convex Cloud, avec ses propres secrets HMAC ; données de démo chargées par `npm run seed -- --prod` |
+| n8n + Mailpit | Même `n8n/docker-compose.yml`, avec un complément propre au serveur (URL publique du webhook, Mailpit sous `/mail/`) ; les deux écoutent sur `127.0.0.1` |
+| Surface publique | Uniquement le webhook signé `/webhook/lendloop-events` et la boîte de démo `/mail/` protégée par mot de passe ; l'éditeur n8n reste privé |
+| Clerk | Instance de développement, pour que les comptes de démo `+clerk_test` fonctionnent |
+
+Vérifié de bout en bout : emails de demande et d'acceptation reçus dans la langue du destinataire, retour signé enregistré dans l'historique du prêt, appels non signés refusés (401) dans les deux sens, événements bloqués pendant une panne de n8n envoyés ensuite.
 
 ---
 

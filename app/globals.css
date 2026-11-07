@@ -134,3 +134,22 @@
 html[lang="zh"] body {
   font-family: var(--font-sans), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
+
+/* Tailwind v4 resets buttons to the default cursor: restore the pointer on
+   everything clickable. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="radio"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="menuitemradio"],
+  [role="option"],
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}

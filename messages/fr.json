@@ -221,5 +221,40 @@
       "overdue_reminder_sent": "Rappel de retard envoyé",
       "automation_failed": "Une automatisation a échoué"
     }
+  },
+  "admin": {
+    "title": "Admin",
+    "subtitle": "Supervisez les prêts et les membres.",
+    "navLoans": "Tous les prêts",
+    "navUsers": "Membres",
+    "forbiddenTitle": "Réservé aux administrateurs",
+    "forbiddenDescription": "Cet espace est réservé aux administrateurs.",
+    "backToTools": "Retour aux outils",
+    "filterLabel": "Filtrer les prêts par statut",
+    "filterAll": "Tous",
+    "emptyLoans": "Aucun prêt pour ce filtre",
+    "emptyUsers": "Aucun membre pour l'instant",
+    "colTool": "Outil",
+    "colOwner": "Propriétaire",
+    "colBorrower": "Emprunteur",
+    "colDates": "Dates",
+    "colStatus": "Statut",
+    "colMember": "Membre",
+    "colRole": "Rôle",
+    "colListings": "Annonces",
+    "colBadge": "Badge",
+    "colActions": "Actions",
+    "roleAdmin": "Admin",
+    "roleUser": "Membre",
+    "grantBadge": "Attribuer « Prêteur de confiance »",
+    "removeBadge": "Retirer le badge",
+    "moderation": "Modération",
+    "removeListing": "Retirer cette annonce",
+    "removeTitle": "Retirer cette annonce ?",
+    "removeDescription": "Les demandes en attente seront refusées. Impossible pendant un prêt en cours.",
+    "toasts": {
+      "toolRemoved": "Annonce retirée.",
+      "badgeUpdated": "Badge mis à jour."
+    }
   }
 }

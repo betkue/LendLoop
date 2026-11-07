@@ -221,5 +221,40 @@
       "overdue_reminder_sent": "Overdue reminder sent",
       "automation_failed": "An automation failed"
     }
+  },
+  "admin": {
+    "title": "Admin",
+    "subtitle": "Oversee loans and members.",
+    "navLoans": "All loans",
+    "navUsers": "Members",
+    "forbiddenTitle": "Admins only",
+    "forbiddenDescription": "This area is reserved for administrators.",
+    "backToTools": "Back to tools",
+    "filterLabel": "Filter loans by status",
+    "filterAll": "All",
+    "emptyLoans": "No loans match this filter",
+    "emptyUsers": "No members yet",
+    "colTool": "Tool",
+    "colOwner": "Owner",
+    "colBorrower": "Borrower",
+    "colDates": "Dates",
+    "colStatus": "Status",
+    "colMember": "Member",
+    "colRole": "Role",
+    "colListings": "Listings",
+    "colBadge": "Badge",
+    "colActions": "Actions",
+    "roleAdmin": "Admin",
+    "roleUser": "Member",
+    "grantBadge": "Grant Trusted Lender",
+    "removeBadge": "Remove badge",
+    "moderation": "Moderation",
+    "removeListing": "Remove this listing",
+    "removeTitle": "Remove this listing?",
+    "removeDescription": "Pending requests will be declined. Not possible while a loan is in progress.",
+    "toasts": {
+      "toolRemoved": "Listing removed.",
+      "badgeUpdated": "Badge updated."
+    }
   }
 }
